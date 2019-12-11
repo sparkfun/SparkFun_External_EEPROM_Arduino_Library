@@ -1,0 +1,48 @@
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+SPARKFUN_LIS2DH12	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+isConnected	KEYWORD2
+available	KEYWORD2
+waitForNewData	KEYWORD2
+temperatureAvailable	KEYWORD2
+
+getX	KEYWORD2
+getY	KEYWORD2
+getZ	KEYWORD2
+getRawX	KEYWORD2
+getRawY	KEYWORD2
+getRawZ	KEYWORD2
+
+getTemperature	KEYWORD2
+parseAccelData	KEYWORD2
+getTempData	KEYWORD2
+
+setDataRate	KEYWORD2
+getDataRate	KEYWORD2
+setScale	KEYWORD2
+getScale	KEYWORD2
+enableTemperature	KEYWORD2
+disableTemperature	KEYWORD2
+setMode	KEYWORD2
+getMode	KEYWORD2
+enableTapDetection	KEYWORD2
+disableTapDetection	KEYWORD2
+setTapThreshold	KEYWORD2
+isTapped	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
