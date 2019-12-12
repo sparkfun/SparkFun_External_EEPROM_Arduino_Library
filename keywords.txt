@@ -6,7 +6,7 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-SPARKFUN_LIS2DH12	KEYWORD1
+ExternalEEPROM	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -14,33 +14,21 @@ SPARKFUN_LIS2DH12	KEYWORD1
 
 begin	KEYWORD2
 isConnected	KEYWORD2
-available	KEYWORD2
-waitForNewData	KEYWORD2
-temperatureAvailable	KEYWORD2
-
-getX	KEYWORD2
-getY	KEYWORD2
-getZ	KEYWORD2
-getRawX	KEYWORD2
-getRawY	KEYWORD2
-getRawZ	KEYWORD2
-
-getTemperature	KEYWORD2
-parseAccelData	KEYWORD2
-getTempData	KEYWORD2
-
-setDataRate	KEYWORD2
-getDataRate	KEYWORD2
-setScale	KEYWORD2
-getScale	KEYWORD2
-enableTemperature	KEYWORD2
-disableTemperature	KEYWORD2
-setMode	KEYWORD2
-getMode	KEYWORD2
-enableTapDetection	KEYWORD2
-disableTapDetection	KEYWORD2
-setTapThreshold	KEYWORD2
-isTapped	KEYWORD2
+isBusy	KEYWORD2
+read	KEYWORD2
+write	KEYWORD2
+erase	KEYWORD2
+setMemorySize	KEYWORD2
+getMemorySize	KEYWORD2
+length	KEYWORD2
+setPageSize	KEYWORD2
+getPageSize	KEYWORD2
+setPageWriteTime	KEYWORD2
+getPageWriteTime	KEYWORD2
+enablePollForWriteComplete	KEYWORD2
+disablePollForWriteComplete	KEYWORD2
+get	KEYWORD2
+put	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
