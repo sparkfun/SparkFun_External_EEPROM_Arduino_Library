@@ -33,7 +33,7 @@ struct struct_memorySettings
 {
   TwoWire *i2cPort;
   uint8_t deviceAddress;
-  unsigned long memorySize_bytes;
+  uint32_t memorySize_bytes;
   uint16_t pageSize_bytes;
   uint8_t pageWriteTime_ms;
   bool pollForWriteComplete;
@@ -60,10 +60,12 @@ public:
   uint16_t getPageSize();
   void setPageWriteTime(uint8_t writeTimeMS); //Set the number of ms required per page write
   uint8_t getPageWriteTime();
+  void enablePollForWriteComplete(); //Most EEPROMs all I2C polling of when a write has completed
+  void disablePollForWriteComplete();
 
   //Functionality to 'get' and 'put' objects to and from EEPROM.
   template <typename T>
-  T &get(int idx, T &t)
+  T &get(uint16_t idx, T &t)
   {
     uint8_t *ptr = (uint8_t *)&t;
     read(idx, ptr, sizeof(T)); //Address, data, sizeOfData
@@ -71,7 +73,7 @@ public:
   }
 
   template <typename T>
-  const T &put(int idx, const T &t) //Address, data
+  const T &put(uint16_t idx, const T &t) //Address, data
   {
     const uint8_t *ptr = (const uint8_t *)&t;
     write(idx, ptr, sizeof(T)); //Address, data, sizeOfData
@@ -81,8 +83,9 @@ public:
 private:
   //Variables
   struct_memorySettings settings = {
+      .i2cPort = &Wire,
       .deviceAddress = 0b1010000, //0b1010 + (A2 A1 A0) or 0b1010 + (B0 A1 A0) for larger (>512kbit) EEPROMs
-      .memorySize_bytes = 256000 / 8,
+      .memorySize_bytes = 512000 / 8,
       .pageSize_bytes = 64,
       .pageWriteTime_ms = 5,
       .pollForWriteComplete = true,

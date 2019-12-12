@@ -100,6 +100,14 @@ uint8_t ExternalEEPROM::getPageWriteTime()
 {
   return settings.pageWriteTime_ms;
 }
+void ExternalEEPROM::enablePollForWriteComplete()
+{
+  settings.pollForWriteComplete = true;
+}
+void ExternalEEPROM::disablePollForWriteComplete()
+{
+  settings.pollForWriteComplete = false;
+}
 
 //Read a byte from a given location
 uint8_t ExternalEEPROM::read(uint32_t eepromLocation)
@@ -140,12 +148,10 @@ void ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t buffe
     settings.i2cPort->write((uint8_t)((eepromLocation + received) & 0xFF)); // LSB
     settings.i2cPort->endTransmission();
 
-    settings.i2cPort->requestFrom(i2cAddress, amtToRead);
+    settings.i2cPort->requestFrom((uint8_t)i2cAddress, (uint8_t)amtToRead);
 
     for (uint16_t x = 0; x < amtToRead; x++)
       buff[received + x] = settings.i2cPort->read();
-
-    settings.i2cPort->endTransmission(); //Send stop condition
 
     received += amtToRead;
   }
@@ -165,18 +171,22 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
   if (eepromLocation + bufferSize >= settings.memorySize_bytes)
     bufferSize = settings.memorySize_bytes - eepromLocation;
 
+  uint16_t maxWriteSize = settings.pageSize_bytes;
+  if (maxWriteSize > 30)
+    maxWriteSize = 30; //Arduino has 32 byte limit. We loose two to the EEPROM address
+
   //Break the buffer into page sized chunks
   uint16_t recorded = 0;
   while (recorded < bufferSize)
   {
-    //Limit the amount to write to a page size
+    //Limit the amount to write to either the page size or the Arduino limit of 30
     int amtToWrite = bufferSize - recorded;
-    if (amtToWrite > settings.pageSize_bytes)
-      amtToWrite = settings.pageSize_bytes;
+    if (amtToWrite > maxWriteSize)
+      amtToWrite = maxWriteSize;
 
     if (amtToWrite > 1)
     {
-      //Writes cannot cross a page line
+      //Check for crossing of a page line. Writes cannot cross a page line.
       uint16_t pageNumber1 = (eepromLocation + recorded) / settings.pageSize_bytes;
       uint16_t pageNumber2 = (eepromLocation + recorded + amtToWrite - 1) / settings.pageSize_bytes;
       if (pageNumber2 > pageNumber1)
@@ -205,8 +215,9 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
 
     if (settings.pollForWriteComplete == true)
     {
-      while (isBusy() == true) //Poll device
-        delay(1);
+      while (isBusy() == true)  //Poll device
+        delayMicroseconds(100); //This shortens the amount of time waiting between writes but hammers the I2C bus
+                                //delay(1);
     }
     else
       delay(settings.pageWriteTime_ms); //Delay the amount of time to record a page
