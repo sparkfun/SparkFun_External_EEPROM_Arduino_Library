@@ -21,7 +21,7 @@
 
 #include <Wire.h>
 
-#include "SparkFun_External_EEPROM.h"
+#include "SparkFun_External_EEPROM.h" // Click here to get the library: http://librarymanager/All#SparkFun_External_EEPROM
 ExternalEEPROM myMem;
 
 #define LOCATION_SETTINGS 0 //Position in EEPROM to store the user setting structure
