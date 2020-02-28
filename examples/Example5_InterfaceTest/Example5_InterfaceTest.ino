@@ -43,7 +43,8 @@ void setup()
   if (myMem.begin() == false)
   {
     Serial.println("No memory detected. Freezing.");
-    while (1);
+    while (1)
+      ;
   }
   Serial.println("Memory detected!");
 
@@ -93,8 +94,10 @@ void setup()
   byte response2 = myMem.read(randomLocation + 1);
   Serial.println("Location " + (String)randomLocation + " should be " + (String)myValue1 + ": " + (String)response1);
   Serial.println("Location " + (String)(randomLocation + 1) + " should be " + (String)myValue2 + ": " + (String)response2);
-  if (myValue1 != response1) allTestsPassed = false;
-  if (myValue2 != response2) allTestsPassed = false;
+  if (myValue1 != response1)
+    allTestsPassed = false;
+  if (myValue2 != response2)
+    allTestsPassed = false;
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   Serial.println("");
@@ -124,8 +127,10 @@ void setup()
   myMem.get(randomLocation + 2, response4);
   Serial.println("Location " + (String)randomLocation + " should be " + (String)myValue3 + ": " + (String)response3);
   Serial.println("Location " + (String)(randomLocation + 2) + " should be " + (String)myValue4 + ": " + (String)response4);
-  if (myValue3 != response3) allTestsPassed = false;
-  if (myValue4 != response4) allTestsPassed = false;
+  if (myValue3 != response3)
+    allTestsPassed = false;
+  if (myValue4 != response4)
+    allTestsPassed = false;
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   Serial.println("");
@@ -155,8 +160,10 @@ void setup()
   myMem.get(randomLocation + 4, response6);
   Serial.println("Location " + (String)randomLocation + " should be " + (String)myValue5 + ": " + (String)response5);
   Serial.println("Location " + (String)(randomLocation + 4) + " should be " + (String)myValue6 + ": " + (String)response6);
-  if (myValue5 != response5) allTestsPassed = false;
-  if (myValue6 != response6) allTestsPassed = false;
+  if (myValue5 != response5)
+    allTestsPassed = false;
+  if (myValue6 != response6)
+    allTestsPassed = false;
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   //int32_t and uint32_t sequential test
@@ -179,8 +186,10 @@ void setup()
   myMem.get(randomLocation + 4, response8);
   Serial.println("Location " + (String)randomLocation + " should be " + (String)myValue7 + ": " + (String)response7);
   Serial.println("Location " + (String)(randomLocation + 4) + " should be " + (String)myValue8 + ": " + (String)response8);
-  if (myValue7 != response7) allTestsPassed = false;
-  if (myValue8 != response8) allTestsPassed = false;
+  if (myValue7 != response7)
+    allTestsPassed = false;
+  if (myValue8 != response8)
+    allTestsPassed = false;
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   //float (32) sequential test
@@ -204,8 +213,10 @@ void setup()
   myMem.get(randomLocation + 4, response10);
   Serial.println("Location " + (String)randomLocation + " should be " + (String)myValue9 + ": " + (String)response9);
   Serial.println("Location " + (String)(randomLocation + 4) + " should be " + (String)myValue10 + ": " + (String)response10);
-  if (myValue9 != response9) allTestsPassed = false;
-  if (myValue10 != response10) allTestsPassed = false;
+  if (myValue9 != response9)
+    allTestsPassed = false;
+  if (myValue10 != response10)
+    allTestsPassed = false;
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   Serial.println("");
@@ -215,7 +226,7 @@ void setup()
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   Serial.println("Size of double: " + (String)sizeof(double));
   double myValue11 = -290.3485723409857;
-  double myValue12 = 384.957;//34987;
+  double myValue12 = 384.957; //34987;
   double myValue13 = 917.14159;
   double myValue14 = 254.8877;
   randomLocation = random(0, myMem.length());
@@ -249,14 +260,18 @@ void setup()
   Serial.print("Rewrite of ");
   Serial.print(myMem.length() - sizeof(myValue14));
   Serial.println(" should be " + (String)myValue14 + ": " + (String)response14);
-  if (myValue11 != response11) allTestsPassed = false;
-  if (myValue12 != response12) allTestsPassed = false;
-  if (myValue13 != response13) allTestsPassed = false;
-  if (myValue14 != response14) allTestsPassed = false;
+  if (myValue11 != response11)
+    allTestsPassed = false;
+  if (myValue12 != response12)
+    allTestsPassed = false;
+  if (myValue13 != response13)
+    allTestsPassed = false;
+  if (myValue14 != response14)
+    allTestsPassed = false;
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   Serial.println("");
-  Serial.println("String test");
+  Serial.println("Buffer Write Test");
 
   //Buffer write test
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -292,12 +307,13 @@ void setup()
 
   Serial.println();
   Serial.print("Memory Contents:");
-  for (uint16_t x = 0; x < 32 * 4; x ++)
+  for (uint16_t x = 0; x < 32 * 4; x++)
   {
     if (x % 16 == 0)
       Serial.println();
     Serial.print(" 0x");
-    if(myMem.read(x) < 0x10) Serial.print("0");
+    if (myMem.read(x) < 0x10)
+      Serial.print("0");
     Serial.print(myMem.read(x), HEX);
   }
   Serial.println();
@@ -310,5 +326,4 @@ void setup()
 
 void loop()
 {
-
 }
