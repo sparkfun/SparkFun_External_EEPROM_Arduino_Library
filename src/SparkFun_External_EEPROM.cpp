@@ -56,18 +56,25 @@ uint32_t ExternalEEPROM::length()
 }
 
 //Returns true if device is detected
-bool ExternalEEPROM::isConnected()
+bool ExternalEEPROM::isConnected(uint8_t i2cAddress)
 {
-  settings.i2cPort->beginTransmission((uint8_t)settings.deviceAddress);
+  if (i2cAddress == 255)
+    i2cAddress = settings.deviceAddress; //We can't set the default to settings.deviceAddress so we use 255 instead
+
+  settings.i2cPort->beginTransmission((uint8_t)i2cAddress);
   if (settings.i2cPort->endTransmission() == 0)
     return (true);
   return (false);
 }
 
 //Returns true if device is not answering (currently writing)
-bool ExternalEEPROM::isBusy()
+//Caller can pass in an i2c address. This is helpful for larger EEPROMs that have two addresses (see block bit 2).
+bool ExternalEEPROM::isBusy(uint8_t i2cAddress)
 {
-  if (isConnected())
+  if (i2cAddress == 255)
+    i2cAddress = settings.deviceAddress; //We can't set the default to settings.deviceAddress so we use 255 instead
+
+  if (isConnected(i2cAddress))
     return (false);
   return (true);
 }
@@ -108,7 +115,14 @@ void ExternalEEPROM::disablePollForWriteComplete()
 {
   settings.pollForWriteComplete = false;
 }
-
+void ExternalEEPROM::setI2CBufferSize(uint16_t numberOfBytes)
+{
+  settings.i2cBufferSize = numberOfBytes;
+}
+uint16_t ExternalEEPROM::getI2CBufferSize()
+{
+  return settings.i2cBufferSize;
+}
 //Read a byte from a given location
 uint8_t ExternalEEPROM::read(uint32_t eepromLocation)
 {
@@ -118,25 +132,33 @@ uint8_t ExternalEEPROM::read(uint32_t eepromLocation)
 }
 
 //Bulk read from EEPROM
-//Handles breaking up read amt into 32 byte chunks
+//Handles breaking up read amt into 32 byte chunks (can override with serI2CBufferSize)
 //Handles a read that straddles the 512kbit barrier
 void ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t bufferSize)
 {
+  //See if EEPROM is available or still writing a previous request
+  uint8_t i2cAddress = settings.deviceAddress;
+  while (isBusy(i2cAddress) == true) //Poll device
+    delayMicroseconds(100);          //This shortens the amount of time waiting between writes but hammers the I2C bus
+
   uint16_t received = 0;
   while (received < bufferSize)
   {
     //Limit the amount to write to a page size
     int amtToRead = bufferSize - received;
-    if (amtToRead > 32) //Arduino I2C buffer size limit
-      amtToRead = 32;
+    if (amtToRead > settings.i2cBufferSize) //Arduino I2C buffer size limit
+      amtToRead = settings.i2cBufferSize;
 
     //Check if we are dealing with large (>512kbit) EEPROMs
     uint8_t i2cAddress = settings.deviceAddress;
     if (settings.memorySize_bytes > 0xFFFF)
     {
       //Figure out if we are going to cross the barrier with this read
-      if (0xFFFF - (eepromLocation + received) < amtToRead) //0xFFFF - 0xFFFA < 32
-        amtToRead = 0xFFFF - (eepromLocation + received);   //Limit the read amt to go right up to edge of barrier
+      if (eepromLocation + received < 0xFFFF)
+      {
+        if (0xFFFF - (eepromLocation + received) < amtToRead) //0xFFFF - 0xFFFA < 32
+          amtToRead = 0xFFFF - (eepromLocation + received);   //Limit the read amt to go right up to edge of barrier
+      }
 
       //Figure out if we are accessing the lower half or the upper half
       if (eepromLocation + received > 0xFFFF)
@@ -165,6 +187,7 @@ void ExternalEEPROM::write(uint32_t eepromLocation, uint8_t dataToWrite)
 }
 
 //Write large bulk amounts
+//Limits writes to the I2C buffer size (default is 32 bytes)
 void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, uint16_t bufferSize)
 {
   //Error check
@@ -172,8 +195,14 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
     bufferSize = settings.memorySize_bytes - eepromLocation;
 
   uint16_t maxWriteSize = settings.pageSize_bytes;
-  if (maxWriteSize > 30)
-    maxWriteSize = 30; //Arduino has 32 byte limit. We loose two to the EEPROM address
+  if (maxWriteSize > settings.i2cBufferSize - 2)
+    maxWriteSize = settings.i2cBufferSize - 2; //Arduino has 32 byte limit. We loose two to the EEPROM address
+
+  uint8_t i2cAddress = settings.deviceAddress;
+
+  //See if EEPROM is available or still writing a previous request
+  while (isBusy(i2cAddress) == true) //Poll device
+    delayMicroseconds(100);          //This shortens the amount of time waiting between writes but hammers the I2C bus
 
   //Break the buffer into page sized chunks
   uint16_t recorded = 0;
@@ -194,12 +223,13 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
     }
 
     //Check if we are dealing with large (>512kbit) EEPROMs
-    uint8_t i2cAddress = settings.deviceAddress;
     if (settings.memorySize_bytes > 0xFFFF)
     {
       //Figure out if we are accessing the lower half or the upper half
       if (eepromLocation + recorded > 0xFFFF)
+      {
         i2cAddress |= 0b100; //Set the block bit to 1
+      }
     }
     settings.i2cPort->beginTransmission(i2cAddress);
 
@@ -213,13 +243,7 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
 
     recorded += amtToWrite;
 
-    if (settings.pollForWriteComplete == true)
-    {
-      while (isBusy() == true)  //Poll device
-        delayMicroseconds(100); //This shortens the amount of time waiting between writes but hammers the I2C bus
-                                //delay(1);
-    }
-    else
+    if (settings.pollForWriteComplete == false)
       delay(settings.pageWriteTime_ms); //Delay the amount of time to record a page
   }
 }

@@ -29,6 +29,8 @@ enablePollForWriteComplete	KEYWORD2
 disablePollForWriteComplete	KEYWORD2
 get	KEYWORD2
 put	KEYWORD2
+setI2CBufferSize	KEYWORD2
+getI2CBufferSize	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

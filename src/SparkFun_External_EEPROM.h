@@ -37,6 +37,7 @@ struct struct_memorySettings
   uint16_t pageSize_bytes;
   uint8_t pageWriteTime_ms;
   bool pollForWriteComplete;
+  uint16_t i2cBufferSize;
 };
 
 class ExternalEEPROM
@@ -48,8 +49,8 @@ public:
   void write(uint32_t eepromLocation, const uint8_t *dataToWrite, uint16_t blockSize);
 
   bool begin(uint8_t deviceAddress = 0b1010000, TwoWire &wirePort = Wire); //By default use the Wire port
-  bool isConnected();
-  bool isBusy();
+  bool isConnected(uint8_t i2cAddress = 255);
+  bool isBusy(uint8_t i2cAddress = 255);
   void erase(uint8_t toWrite = 0x00); //Erase the entire memory. Optional: write a given byte to each spot.
 
   //void settings(struct_memorySettings newSettings); //Set all the settings using the settings struct
@@ -62,10 +63,12 @@ public:
   uint8_t getPageWriteTime();
   void enablePollForWriteComplete(); //Most EEPROMs all I2C polling of when a write has completed
   void disablePollForWriteComplete();
+  void setI2CBufferSize(uint16_t numberOfBytes); //How big is your Wire buffer? Default is 32 but Artemis supports 256 bytes.
+  uint16_t getI2CBufferSize();
 
   //Functionality to 'get' and 'put' objects to and from EEPROM.
   template <typename T>
-  T &get(uint16_t idx, T &t)
+  T &get(uint32_t idx, T &t)
   {
     uint8_t *ptr = (uint8_t *)&t;
     read(idx, ptr, sizeof(T)); //Address, data, sizeOfData
@@ -73,7 +76,7 @@ public:
   }
 
   template <typename T>
-  const T &put(uint16_t idx, const T &t) //Address, data
+  const T &put(uint32_t idx, const T &t) //Address, data
   {
     const uint8_t *ptr = (const uint8_t *)&t;
     write(idx, ptr, sizeof(T)); //Address, data, sizeOfData
@@ -89,6 +92,7 @@ private:
       .pageSize_bytes = 64,
       .pageWriteTime_ms = 5,
       .pollForWriteComplete = true,
+      .i2cBufferSize = 32, //Arduino default is 32 bytes
   };
 };
 
