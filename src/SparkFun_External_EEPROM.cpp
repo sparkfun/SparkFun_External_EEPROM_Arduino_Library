@@ -138,6 +138,9 @@ void ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t buffe
 {
   //See if EEPROM is available or still writing a previous request
   uint8_t i2cAddress = settings.deviceAddress;
+  if (eepromLocation > 0xFFFF)
+    i2cAddress |= 0b100; //Set the block bit to 1
+
   while (isBusy(i2cAddress) == true) //Poll device
     delayMicroseconds(100);          //This shortens the amount of time waiting between writes but hammers the I2C bus
 
@@ -199,6 +202,8 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
     maxWriteSize = settings.i2cBufferSize - 2; //Arduino has 32 byte limit. We loose two to the EEPROM address
 
   uint8_t i2cAddress = settings.deviceAddress;
+  if (eepromLocation > 0xFFFF)
+    i2cAddress |= 0b100; //Set the block bit to 1
 
   //See if EEPROM is available or still writing a previous request
   while (isBusy(i2cAddress) == true) //Poll device
