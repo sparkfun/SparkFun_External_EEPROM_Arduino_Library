@@ -29,6 +29,32 @@
 #include "Arduino.h"
 #include "Wire.h"
 
+#if defined(ARDUINO_ARCH_APOLLO3)
+
+#define I2C_BUFFER_LENGTH_RX AP3_WIRE_RX_BUFFER_LEN //Artemis is 256
+#define I2C_BUFFER_LENGTH_TX AP3_WIRE_TX_BUFFER_LEN
+
+#elif defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
+
+#define I2C_BUFFER_LENGTH_RX BUFFER_LENGTH //I2C_BUFFER_LENGTH is defined in Wire.H
+#define I2C_BUFFER_LENGTH_TX BUFFER_LENGTH
+
+#elif defined(__SAMD21G18A__)
+
+#define I2C_BUFFER_LENGTH_RX SERIAL_BUFFER_SIZE //SAMD21 uses RingBuffer.h
+#define I2C_BUFFER_LENGTH_TX SERIAL_BUFFER_SIZE
+
+#elif (defined(__MK20DX128__) || defined(__MK20DX256__) || defined(__MKL26Z64__) || defined(__MK64FX512__) || defined(__MK66FX1M0__) || defined(__IMXRT1062__)) // 3.0/3.1-3.2/LC/3.5/3.6/4.0
+
+#define I2C_BUFFER_LENGTH_RX BUFFER_LENGTH //Teensy
+#define I2C_BUFFER_LENGTH_TX BUFFER_LENGTH
+
+#else
+
+#pragma GCC error "This platform doesn't have a wire buffer size defined. Please contribute to this library!"
+
+#endif
+
 struct struct_memorySettings
 {
   TwoWire *i2cPort;
@@ -63,8 +89,7 @@ public:
   uint8_t getPageWriteTime();
   void enablePollForWriteComplete(); //Most EEPROMs all I2C polling of when a write has completed
   void disablePollForWriteComplete();
-  void setI2CBufferSize(uint16_t numberOfBytes); //How big is your Wire buffer? Default is 32 but Artemis supports 256 bytes.
-  uint16_t getI2CBufferSize();
+  uint16_t getI2CBufferSize(); //Return the size of the TX buffer
 
   //Functionality to 'get' and 'put' objects to and from EEPROM.
   template <typename T>
@@ -92,7 +117,6 @@ private:
       .pageSize_bytes = 64,
       .pageWriteTime_ms = 5,
       .pollForWriteComplete = true,
-      .i2cBufferSize = 32, //Arduino default is 32 bytes
   };
 };
 

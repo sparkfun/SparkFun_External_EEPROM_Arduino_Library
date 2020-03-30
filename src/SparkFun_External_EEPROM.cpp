@@ -31,10 +31,6 @@ bool ExternalEEPROM::begin(uint8_t deviceAddress, TwoWire &wirePort)
   settings.i2cPort = &wirePort; //Grab which port the user wants us to use
   settings.deviceAddress = deviceAddress;
 
-#if defined(ARDUINO_ARCH_APOLLO3)
-  settings.i2cBufferSize = AP3_WIRE_RX_BUFFER_LEN; //Artemis is 256
-#endif
-
   if (isConnected() == false)
   {
     return false;
@@ -119,13 +115,9 @@ void ExternalEEPROM::disablePollForWriteComplete()
 {
   settings.pollForWriteComplete = false;
 }
-void ExternalEEPROM::setI2CBufferSize(uint16_t numberOfBytes)
-{
-  settings.i2cBufferSize = numberOfBytes;
-}
 uint16_t ExternalEEPROM::getI2CBufferSize()
 {
-  return settings.i2cBufferSize;
+  return I2C_BUFFER_LENGTH_TX;
 }
 //Read a byte from a given location
 uint8_t ExternalEEPROM::read(uint32_t eepromLocation)
@@ -145,8 +137,8 @@ void ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t buffe
   {
     //Limit the amount to write to a page size
     int amtToRead = bufferSize - received;
-    if (amtToRead > settings.i2cBufferSize) //Arduino I2C buffer size limit
-      amtToRead = settings.i2cBufferSize;
+    if (amtToRead > I2C_BUFFER_LENGTH_RX) //Arduino I2C buffer size limit
+      amtToRead = I2C_BUFFER_LENGTH_RX;
 
     //Check if we are dealing with large (>512kbit) EEPROMs
     uint8_t i2cAddress = settings.deviceAddress;
@@ -198,8 +190,8 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
     bufferSize = settings.memorySize_bytes - eepromLocation;
 
   uint16_t maxWriteSize = settings.pageSize_bytes;
-  if (maxWriteSize > settings.i2cBufferSize - 2)
-    maxWriteSize = settings.i2cBufferSize - 2; //Arduino has 32 byte limit. We loose two to the EEPROM address
+  if (maxWriteSize > I2C_BUFFER_LENGTH_TX - 2)
+    maxWriteSize = I2C_BUFFER_LENGTH_TX - 2; //Arduino has 32 byte limit. We loose two to the EEPROM address
 
   //Break the buffer into page sized chunks
   uint16_t recorded = 0;
