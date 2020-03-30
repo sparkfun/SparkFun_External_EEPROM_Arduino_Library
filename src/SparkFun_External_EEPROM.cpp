@@ -31,6 +31,10 @@ bool ExternalEEPROM::begin(uint8_t deviceAddress, TwoWire &wirePort)
   settings.i2cPort = &wirePort; //Grab which port the user wants us to use
   settings.deviceAddress = deviceAddress;
 
+#if defined(ARDUINO_ARCH_APOLLO3)
+  settings.i2cBufferSize = AP3_WIRE_RX_BUFFER_LEN; //Artemis is 256
+#endif
+
   if (isConnected() == false)
   {
     return false;
@@ -68,7 +72,7 @@ bool ExternalEEPROM::isConnected(uint8_t i2cAddress)
 }
 
 //Returns true if device is not answering (currently writing)
-//Caller can pass in an i2c address. This is helpful for larger EEPROMs that have two addresses (see block bit 2).
+//Caller can pass in an I2C address. This is helpful for larger EEPROMs that have two addresses (see block bit 2).
 bool ExternalEEPROM::isBusy(uint8_t i2cAddress)
 {
   if (i2cAddress == 255)
@@ -132,18 +136,10 @@ uint8_t ExternalEEPROM::read(uint32_t eepromLocation)
 }
 
 //Bulk read from EEPROM
-//Handles breaking up read amt into 32 byte chunks (can override with serI2CBufferSize)
+//Handles breaking up read amt into 32 byte chunks (can be overriden with setI2CBufferSize)
 //Handles a read that straddles the 512kbit barrier
 void ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t bufferSize)
 {
-  //See if EEPROM is available or still writing a previous request
-  uint8_t i2cAddress = settings.deviceAddress;
-  if (eepromLocation > 0xFFFF)
-    i2cAddress |= 0b100; //Set the block bit to 1
-
-  while (isBusy(i2cAddress) == true) //Poll device
-    delayMicroseconds(100);          //This shortens the amount of time waiting between writes but hammers the I2C bus
-
   uint16_t received = 0;
   while (received < bufferSize)
   {
@@ -167,6 +163,10 @@ void ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t buffe
       if (eepromLocation + received > 0xFFFF)
         i2cAddress |= 0b100; //Set the block bit to 1
     }
+
+    //See if EEPROM is available or still writing a previous request
+    while (isBusy(i2cAddress) == true) //Poll device
+      delayMicroseconds(100);          //This shortens the amount of time waiting between writes but hammers the I2C bus
 
     settings.i2cPort->beginTransmission(i2cAddress);
     settings.i2cPort->write((uint8_t)((eepromLocation + received) >> 8));   // MSB
@@ -201,14 +201,6 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
   if (maxWriteSize > settings.i2cBufferSize - 2)
     maxWriteSize = settings.i2cBufferSize - 2; //Arduino has 32 byte limit. We loose two to the EEPROM address
 
-  uint8_t i2cAddress = settings.deviceAddress;
-  if (eepromLocation > 0xFFFF)
-    i2cAddress |= 0b100; //Set the block bit to 1
-
-  //See if EEPROM is available or still writing a previous request
-  while (isBusy(i2cAddress) == true) //Poll device
-    delayMicroseconds(100);          //This shortens the amount of time waiting between writes but hammers the I2C bus
-
   //Break the buffer into page sized chunks
   uint16_t recorded = 0;
   while (recorded < bufferSize)
@@ -227,23 +219,24 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
         amtToWrite = (pageNumber2 * settings.pageSize_bytes) - (eepromLocation + recorded); //Limit the read amt to go right up to edge of page barrier
     }
 
+    uint8_t i2cAddress = settings.deviceAddress;
     //Check if we are dealing with large (>512kbit) EEPROMs
     if (settings.memorySize_bytes > 0xFFFF)
     {
       //Figure out if we are accessing the lower half or the upper half
       if (eepromLocation + recorded > 0xFFFF)
-      {
         i2cAddress |= 0b100; //Set the block bit to 1
-      }
     }
-    settings.i2cPort->beginTransmission(i2cAddress);
 
+    //See if EEPROM is available or still writing a previous request
+    while (isBusy(i2cAddress) == true) //Poll device
+      delayMicroseconds(100);          //This shortens the amount of time waiting between writes but hammers the I2C bus
+
+    settings.i2cPort->beginTransmission(i2cAddress);
     settings.i2cPort->write((uint8_t)((eepromLocation + recorded) >> 8));   // MSB
     settings.i2cPort->write((uint8_t)((eepromLocation + recorded) & 0xFF)); // LSB
-
     for (uint8_t x = 0; x < amtToWrite; x++)
       settings.i2cPort->write(dataToWrite[recorded + x]);
-
     settings.i2cPort->endTransmission(); //Send stop condition
 
     recorded += amtToWrite;
