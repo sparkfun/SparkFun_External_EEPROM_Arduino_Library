@@ -221,7 +221,7 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
     }
 
     //See if EEPROM is available or still writing a previous request
-    while (isBusy(i2cAddress) == true) //Poll device
+    while (settings.pollForWriteComplete && isBusy(i2cAddress) == true) //Poll device
       delayMicroseconds(100);          //This shortens the amount of time waiting between writes but hammers the I2C bus
 
     settings.i2cPort->beginTransmission(i2cAddress);
