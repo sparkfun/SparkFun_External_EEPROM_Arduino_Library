@@ -15,6 +15,10 @@ This library can be installed via the Arduino Library manager. Search for **Spar
 
 Want to help? Please do! We are always looking for ways to improve and build out features of this library.
 
+Thanks to:
+
+* Hutch67 for correcting the [test for pollForWriteComplete setting](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/4/files)
+
 Repository Contents
 -------------------
 
