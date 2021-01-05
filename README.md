@@ -18,6 +18,7 @@ Want to help? Please do! We are always looking for ways to improve and build out
 Thanks to:
 
 * Hutch67 for correcting the [test for pollForWriteComplete setting](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/4/files)
+* [TinaJ_kay](https://github.com/TylerBird) for correcting [ambiguous int declaration](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/7)
 
 Repository Contents
 -------------------
