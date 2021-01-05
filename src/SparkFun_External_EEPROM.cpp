@@ -136,7 +136,7 @@ void ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t buffe
   while (received < bufferSize)
   {
     //Limit the amount to write to a page size
-    int amtToRead = bufferSize - received;
+    uint16_t amtToRead = bufferSize - received;
     if (amtToRead > I2C_BUFFER_LENGTH_RX) //Arduino I2C buffer size limit
       amtToRead = I2C_BUFFER_LENGTH_RX;
 
