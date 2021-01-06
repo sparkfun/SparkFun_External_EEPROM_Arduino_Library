@@ -54,6 +54,12 @@
 #define I2C_BUFFER_LENGTH_RX I2C_BUFFER_LENGTH
 #define I2C_BUFFER_LENGTH_TX I2C_BUFFER_LENGTH
 
+#elif defined(STM32)
+#elif defined(STM32)
+
+#define I2C_BUFFER_LENGTH_RX BUFFER_LENGTH //BUFFER_LENGTH is defined in Wire.h for STM32
+#define I2C_BUFFER_LENGTH_TX BUFFER_LENGTH
+
 #else
 
 #pragma GCC error "This platform doesn't have a wire buffer size defined. Please contribute to this library!"
