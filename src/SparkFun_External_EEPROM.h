@@ -31,8 +31,8 @@
 
 #if defined(ARDUINO_ARCH_APOLLO3)
 
-#define I2C_BUFFER_LENGTH_RX AP3_WIRE_RX_BUFFER_LEN //Artemis is 256
-#define I2C_BUFFER_LENGTH_TX AP3_WIRE_TX_BUFFER_LEN
+#define I2C_BUFFER_LENGTH_RX 256 //Hardcoding until issue is resolved: https://github.com/sparkfun/Arduino_Apollo3/issues/351
+#define I2C_BUFFER_LENGTH_TX 256
 
 #elif defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
 
