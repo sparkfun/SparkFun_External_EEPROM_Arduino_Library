@@ -61,7 +61,11 @@
 
 #else
 
-#pragma GCC error "This platform doesn't have a wire buffer size defined. Please contribute to this library!"
+#pragma GCC warning "This platform doesn't have a wire buffer size defined. Defaulting to 32 bytes. Please contribute to this library!"
+
+//Default to safe 32 bytes
+#define I2C_BUFFER_LENGTH_RX 32
+#define I2C_BUFFER_LENGTH_TX 32
 
 #endif
 
