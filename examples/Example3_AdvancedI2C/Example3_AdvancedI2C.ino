@@ -17,7 +17,13 @@
   ADR1 to GND, and ADR2 to GND.
 
   Hardware Connections:
-  Plug the SparkFun Qwiic EEPROM to an Uno, Artemis, or other Qwiic equipped board
+  I used an Artemis for this example. Make sure to connect the PTH of Qwiic EEPROM to the pins of the seconday I2C bus.
+
+  pin 0 on Artemis RedBoard = SDA on Qwiic EEPROM
+  pin 6 = SCL
+  GND to GND
+  3.3V to 3.3V
+  
   Load this sketch
   Open output window at 115200bps
 */
@@ -32,11 +38,12 @@ void setup()
   Serial.begin(115200);
   delay(10);
   Serial.println("I2C EEPROM example");
-
-  Wire.begin();
+  
+//  Wire1.setClock(400000); //set I2C communication to 400kHz
+  Wire1.begin();
 
   #define EEPROM_ADDRESS 0b1010001 //0b1010(A2 A1 A0): A standard I2C EEPROM with the ADR0 bit set to VCC
-
+    
   //Connect to a EEPROM with ADR0 set to VCC and use the Wire1 hardware to talk to the EEPROM
   if (myMem.begin(EEPROM_ADDRESS, Wire1) == false) //And Uno will fail to compile here
   {

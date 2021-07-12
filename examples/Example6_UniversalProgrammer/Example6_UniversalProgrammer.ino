@@ -21,13 +21,13 @@
   MISO = DO
   MOSI = DI
   10 = CS
+  GND = GND
+  3.3V = VCC
 
-  Wire an EEPROM to the RedBoard:
+  Connect Qwiic EEPROM with Qwiic cable
 
-  SDA on Artemis RedBoard = Pin 5 on EEPROM
-  SCL = 6
-  GND = 1/2/4/7
-  3.3V = 3+/8
+  To really test the full functionality of this example, make sure to load an SD card with a file
+  named data.bin and some made up binary data.
 
   Note: On larger EEPROMs, pin 3 must be tied to 3.3V. RTFM.
 
