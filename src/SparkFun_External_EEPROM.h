@@ -64,9 +64,9 @@
 #define I2C_BUFFER_LENGTH_RX SERIAL_BUFFER_SIZE //Adafruit Bluefruit nRF52 Boards uses RingBuffer.h
 #define I2C_BUFFER_LENGTH_TX SERIAL_BUFFER_SIZE
 
-#elif defined(PICO_RP2040)
+#elif defined(ARDUINO_ARCH_RP2040)
 
-#define I2C_BUFFER_LENGTH_RX WIRE_BUFFER_SIZE //defined in Wire.h (provided by pico-arduino-compat)
+#define I2C_BUFFER_LENGTH_RX WIRE_BUFFER_SIZE //128 - defined in Wire.h (provided by pico-arduino-compat)
 #define I2C_BUFFER_LENGTH_TX WIRE_BUFFER_SIZE
 
 #else
