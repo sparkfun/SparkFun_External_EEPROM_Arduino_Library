@@ -117,7 +117,7 @@ public:
   uint8_t getPageWriteTime();
   void enablePollForWriteComplete(); //Most EEPROMs all I2C polling of when a write has completed
   void disablePollForWriteComplete();
-  uint16_t getI2CBufferSize(); //Return the size of the TX buffer
+  constexpr uint16_t getI2CBufferSize(); //Return the size of the TX buffer
 
   //Functionality to 'get' and 'put' objects to and from EEPROM.
   template <typename T>
