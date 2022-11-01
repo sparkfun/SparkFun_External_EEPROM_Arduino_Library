@@ -10,7 +10,7 @@
 
   This example demonstrates how to set the various settings for a given EEPROM.
   Read the datasheet! Each EEPROM will have specific values for:
-  Overall EEPROM size in bytes (512kbit = 64000, 256kbit = 32000)
+  Overall EEPROM size in bytes (512kbit = 65536, 256kbit = 32768)
   Bytes per page write (64 and 128 are common)
   Whether write polling is supported
   
@@ -45,10 +45,10 @@ void setup()
   Serial.println("Memory detected!");
 
   //Set settings for this EEPROM
-  myMem.setMemorySize(512000/8); //In bytes. 512kbit = 64kbyte
+  myMem.setMemorySize(512 * 1024 / 8); //In bytes. 512kbit = 64kbyte
   myMem.setPageSize(128); //In bytes. Has 128 byte page size.
   myMem.enablePollForWriteComplete(); //Supports I2C polling of write completion
-  myMem.setPageWriteTime(3); //3 ms max write time
+  myMem.setPageWriteTime(5); //5 ms max write time
 
   Serial.print("Mem size in bytes: ");
   Serial.println(myMem.length());

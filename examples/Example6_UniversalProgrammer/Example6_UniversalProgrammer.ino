@@ -71,7 +71,7 @@ void setup()
   beginSD();
 
   //Set settings for a 24LC1025
-  myMem.setMemorySize(1024000 / 8); //In bytes. 1024kbit = 64kbyte
+  myMem.setMemorySize(1024 * 1024 / 8); //In bytes. 1024 Kbit = 128 KB
   myMem.setPageSize(128);           //In bytes.
   myMem.enablePollForWriteComplete();
 }
