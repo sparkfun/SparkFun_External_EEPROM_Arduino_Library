@@ -92,7 +92,6 @@ struct struct_memorySettings
   uint16_t pageSize_bytes;
   uint8_t pageWriteTime_ms;
   bool pollForWriteComplete;
-  uint16_t i2cBufferSize;
 };
 
 class ExternalEEPROM
@@ -145,7 +144,7 @@ private:
       .memorySize_bytes = 512000 / 8,
       .pageSize_bytes = 64,
       .pageWriteTime_ms = 5,
-      .pollForWriteComplete = true,
+      .pollForWriteComplete = true
   };
 };
 
