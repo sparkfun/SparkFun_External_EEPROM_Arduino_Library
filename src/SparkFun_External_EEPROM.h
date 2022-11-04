@@ -142,7 +142,7 @@ private:
       .i2cPort = &Wire,
       .deviceAddress = 0b1010000, 			// 0x50; format is 0b1010 + (A2 A1 A0) or 0b1010 + (B0 A1 A0) for larger (>512kbit) EEPROMs
       .memorySize_bytes = 512 * 1024 / 8,	// equals 64 KB
-      .pageSize_bytes = 128,
+      .pageSize_bytes = 64,
       .pageWriteTime_ms = 5,
       .pollForWriteComplete = true
   };
