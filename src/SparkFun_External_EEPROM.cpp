@@ -115,7 +115,7 @@ void ExternalEEPROM::disablePollForWriteComplete()
 {
   settings.pollForWriteComplete = false;
 }
-uint16_t ExternalEEPROM::getI2CBufferSize()
+constexpr uint16_t ExternalEEPROM::getI2CBufferSize()
 {
   return I2C_BUFFER_LENGTH_TX;
 }

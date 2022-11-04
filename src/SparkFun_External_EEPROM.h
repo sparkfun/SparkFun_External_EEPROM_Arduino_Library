@@ -92,7 +92,6 @@ struct struct_memorySettings
   uint16_t pageSize_bytes;
   uint8_t pageWriteTime_ms;
   bool pollForWriteComplete;
-  uint16_t i2cBufferSize;
 };
 
 class ExternalEEPROM
@@ -118,7 +117,7 @@ public:
   uint8_t getPageWriteTime();
   void enablePollForWriteComplete(); //Most EEPROMs all I2C polling of when a write has completed
   void disablePollForWriteComplete();
-  uint16_t getI2CBufferSize(); //Return the size of the TX buffer
+  constexpr uint16_t getI2CBufferSize(); //Return the size of the TX buffer
 
   //Functionality to 'get' and 'put' objects to and from EEPROM.
   template <typename T>
@@ -138,14 +137,14 @@ public:
   }
 
 private:
-  //Variables
+  // Default settings are for onsemi CAT24C51 512Kbit I2C EEPROM used on SparkFun Qwiic EEPROM Breakout
   struct_memorySettings settings = {
       .i2cPort = &Wire,
-      .deviceAddress = 0b1010000, //0b1010 + (A2 A1 A0) or 0b1010 + (B0 A1 A0) for larger (>512kbit) EEPROMs
-      .memorySize_bytes = 512000 / 8,
-      .pageSize_bytes = 64,
+      .deviceAddress = 0b1010000, 			// 0x50; format is 0b1010 + (A2 A1 A0) or 0b1010 + (B0 A1 A0) for larger (>512kbit) EEPROMs
+      .memorySize_bytes = 512 * 1024 / 8,	// equals 64 KB
+      .pageSize_bytes = 128,
       .pageWriteTime_ms = 5,
-      .pollForWriteComplete = true,
+      .pollForWriteComplete = true
   };
 };
 

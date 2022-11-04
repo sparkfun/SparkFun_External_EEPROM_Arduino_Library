@@ -48,7 +48,7 @@ void setup()
   }
   Serial.println("Memory detected!");
 
-  myMem.setMemorySize(512000 / 8); //Qwiic EEPROM is the 24512C (512k bit)
+  myMem.setMemorySize(512 * 1024 / 8); //Qwiic EEPROM is the 24512C (512k bit)
   //myMem.setPageSize(128);
   //myMem.disablePollForWriteComplete();
 
