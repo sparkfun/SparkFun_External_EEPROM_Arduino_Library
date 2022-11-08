@@ -209,7 +209,7 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
       uint16_t pageNumber1 = (eepromLocation + recorded) / settings.pageSize_bytes;
       uint16_t pageNumber2 = (eepromLocation + recorded + amtToWrite - 1) / settings.pageSize_bytes;
       if (pageNumber2 > pageNumber1)
-        amtToWrite = (pageNumber2 * settings.pageSize_bytes) - (eepromLocation + recorded); //Limit the read amt to go right up to edge of page barrier
+        amtToWrite = ((pageNumber1+1) * settings.pageSize_bytes) - (eepromLocation + recorded); //Limit the write amt to go right up to edge of page barrier
     }
 
     uint8_t i2cAddress = settings.deviceAddress;
