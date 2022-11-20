@@ -166,7 +166,7 @@ void ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t buffe
     settings.i2cPort->write((uint8_t)((eepromLocation + received) & 0xFF)); // LSB
     settings.i2cPort->endTransmission();
 
-    settings.i2cPort->requestFrom((uint8_t)i2cAddress, (uint8_t)amtToRead);
+    settings.i2cPort->requestFrom((uint8_t)i2cAddress, (size_t)amtToRead);
 
     for (uint16_t x = 0; x < amtToRead; x++)
       buff[received + x] = settings.i2cPort->read();
@@ -190,7 +190,7 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
   if (eepromLocation + bufferSize >= settings.memorySize_bytes)
     bufferSize = settings.memorySize_bytes - eepromLocation;
 
-  uint16_t maxWriteSize = settings.pageSize_bytes;
+  int16_t maxWriteSize = settings.pageSize_bytes;
   if (maxWriteSize > I2C_BUFFER_LENGTH_TX - 2)
     maxWriteSize = I2C_BUFFER_LENGTH_TX - 2; //Arduino has 32 byte limit. We loose two to the EEPROM address
 
