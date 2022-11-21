@@ -71,8 +71,20 @@
 
 #elif defined(ARDUINO_ARCH_RP2040)
 
+#ifdef WIRE_BUFFER_SIZE
 #define I2C_BUFFER_LENGTH_RX WIRE_BUFFER_SIZE //128 - defined in Wire.h (provided by pico-arduino-compat)
 #define I2C_BUFFER_LENGTH_TX WIRE_BUFFER_SIZE
+#elif defined(ARDUINO_RASPBERRY_PI_PICO) 
+
+#define I2C_BUFFER_LENGTH_RX 256 //Not properly defined but set at 256: https://github.com/arduino/ArduinoCore-mbed/blob/master/libraries/Wire/Wire.h
+#define I2C_BUFFER_LENGTH_TX 256
+#else
+#pragma GCC warning "This RP2040 platform doesn't have a wire buffer size defined. Defaulting to 32 bytes. Please contribute to this library!"
+
+//Default to safe 32 bytes
+#define I2C_BUFFER_LENGTH_RX 32
+#define I2C_BUFFER_LENGTH_TX 32
+#endif
 
 #else
 
