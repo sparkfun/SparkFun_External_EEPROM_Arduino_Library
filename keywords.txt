@@ -31,6 +31,8 @@ get	KEYWORD2
 put	KEYWORD2
 setI2CBufferSize	KEYWORD2
 getI2CBufferSize	KEYWORD2
+putString	KEYWORD2
+getString	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
