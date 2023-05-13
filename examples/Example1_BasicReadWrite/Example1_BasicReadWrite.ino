@@ -65,6 +65,15 @@ void setup()
   myMem.get(20, myRead3); //location to read, thing to put data into
   Serial.print("I read: ");
   Serial.println(myRead3);
+
+  String myString = "Hi, I am just a simple test string";
+  unsigned long nextEEPROMLocation = myMem.putString(30, myString);
+  String myRead4 = "";
+  myMem.getString(30, myRead4);
+  Serial.print("I read: ");
+  Serial.println(myRead4);
+  Serial.print("Next available EEPROM location: ");
+  Serial.println(nextEEPROMLocation);  
 }
 
 void loop()
