@@ -119,6 +119,26 @@ constexpr uint16_t ExternalEEPROM::getI2CBufferSize()
 {
   return I2C_BUFFER_LENGTH_TX;
 }
+uint32_t ExternalEEPROM::putString(uint32_t eepromLocation, String &strToWrite)
+{
+  uint16_t strLen = strToWrite.length() + 1; 
+  write(eepromLocation, (uint8_t*)strToWrite.c_str(), strLen);
+  return eepromLocation + strLen;
+}
+void ExternalEEPROM::getString(uint32_t eepromLocation, String &strToRead)
+{
+  if(strToRead.length()){
+    strToRead.remove(0,strToRead.length());
+  }
+  uint8_t tmp = 65; // dummy
+  while(tmp != 0){
+    tmp = read(eepromLocation);
+    if(tmp != 0){
+      strToRead += static_cast<char>(tmp);
+    }
+      eepromLocation++;
+    }   
+}
 //Read a byte from a given location
 uint8_t ExternalEEPROM::read(uint32_t eepromLocation)
 {
