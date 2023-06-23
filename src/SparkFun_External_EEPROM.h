@@ -1,6 +1,6 @@
 /*
   This is a library to read/write to external I2C EEPROMs.
-  It uses the same template system found in the Arduino 
+  It uses the same template system found in the Arduino
   EEPROM library so you can use the same get() and put() functions.
 
   https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library
@@ -31,22 +31,24 @@
 
 #if defined(ARDUINO_ARCH_APOLLO3)
 
-#define I2C_BUFFER_LENGTH_RX 256 //Hardcoding until issue is resolved: https://github.com/sparkfun/Arduino_Apollo3/issues/351
+#define I2C_BUFFER_LENGTH_RX                                                                                           \
+    256 // Hardcoding until issue is resolved: https://github.com/sparkfun/Arduino_Apollo3/issues/351
 #define I2C_BUFFER_LENGTH_TX 256
 
 #elif defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)
 
-#define I2C_BUFFER_LENGTH_RX BUFFER_LENGTH //I2C_BUFFER_LENGTH is defined in Wire.H
+#define I2C_BUFFER_LENGTH_RX BUFFER_LENGTH // I2C_BUFFER_LENGTH is defined in Wire.H
 #define I2C_BUFFER_LENGTH_TX BUFFER_LENGTH
 
 #elif defined(__SAMD21G18A__)
 
-#define I2C_BUFFER_LENGTH_RX SERIAL_BUFFER_SIZE //SAMD21 uses RingBuffer.h
+#define I2C_BUFFER_LENGTH_RX SERIAL_BUFFER_SIZE // SAMD21 uses RingBuffer.h
 #define I2C_BUFFER_LENGTH_TX SERIAL_BUFFER_SIZE
 
-#elif (defined(__MK20DX128__) || defined(__MK20DX256__) || defined(__MKL26Z64__) || defined(__MK64FX512__) || defined(__MK66FX1M0__) || defined(__IMXRT1062__)) // 3.0/3.1-3.2/LC/3.5/3.6/4.0
+#elif (defined(__MK20DX128__) || defined(__MK20DX256__) || defined(__MKL26Z64__) || defined(__MK64FX512__) ||          \
+       defined(__MK66FX1M0__) || defined(__IMXRT1062__)) // 3.0/3.1-3.2/LC/3.5/3.6/4.0
 
-#define I2C_BUFFER_LENGTH_RX BUFFER_LENGTH //Teensy
+#define I2C_BUFFER_LENGTH_RX BUFFER_LENGTH // Teensy
 #define I2C_BUFFER_LENGTH_TX BUFFER_LENGTH
 
 #elif defined(ESP32)
@@ -56,41 +58,45 @@
 
 #elif defined(ESP8266)
 
-#define I2C_BUFFER_LENGTH_RX BUFFER_LENGTH //BUFFER_LENGTH is defined in Wire.h for ESP8266
+#define I2C_BUFFER_LENGTH_RX BUFFER_LENGTH // BUFFER_LENGTH is defined in Wire.h for ESP8266
 #define I2C_BUFFER_LENGTH_TX BUFFER_LENGTH
 
 #elif defined(STM32)
 
-#define I2C_BUFFER_LENGTH_RX BUFFER_LENGTH //BUFFER_LENGTH is defined in Wire.h for STM32
+#define I2C_BUFFER_LENGTH_RX BUFFER_LENGTH // BUFFER_LENGTH is defined in Wire.h for STM32
 #define I2C_BUFFER_LENGTH_TX BUFFER_LENGTH
 
 #elif defined(NRF52_SERIES)
 
-#define I2C_BUFFER_LENGTH_RX SERIAL_BUFFER_SIZE //Adafruit Bluefruit nRF52 Boards uses RingBuffer.h
+#define I2C_BUFFER_LENGTH_RX SERIAL_BUFFER_SIZE // Adafruit Bluefruit nRF52 Boards uses RingBuffer.h
 #define I2C_BUFFER_LENGTH_TX SERIAL_BUFFER_SIZE
 
 #elif defined(ARDUINO_ARCH_RP2040)
 
 #ifdef WIRE_BUFFER_SIZE
-#define I2C_BUFFER_LENGTH_RX WIRE_BUFFER_SIZE //128 - defined in Wire.h (provided by pico-arduino-compat)
+#define I2C_BUFFER_LENGTH_RX WIRE_BUFFER_SIZE // 128 - defined in Wire.h (provided by pico-arduino-compat)
 #define I2C_BUFFER_LENGTH_TX WIRE_BUFFER_SIZE
-#elif defined(ARDUINO_RASPBERRY_PI_PICO) 
+#elif defined(ARDUINO_RASPBERRY_PI_PICO)
 
-#define I2C_BUFFER_LENGTH_RX 256 //Not properly defined but set at 256: https://github.com/arduino/ArduinoCore-mbed/blob/master/libraries/Wire/Wire.h
+#define I2C_BUFFER_LENGTH_RX                                                                                           \
+    256 // Not properly defined but set at 256:
+        // https://github.com/arduino/ArduinoCore-mbed/blob/master/libraries/Wire/Wire.h
 #define I2C_BUFFER_LENGTH_TX 256
 #else
-#pragma GCC warning "This RP2040 platform doesn't have a wire buffer size defined. Defaulting to 32 bytes. Please contribute to this library!"
+#pragma GCC warning                                                                                                    \
+    "This RP2040 platform doesn't have a wire buffer size defined. Defaulting to 32 bytes. Please contribute to this library!"
 
-//Default to safe 32 bytes
+// Default to safe 32 bytes
 #define I2C_BUFFER_LENGTH_RX 32
 #define I2C_BUFFER_LENGTH_TX 32
 #endif
 
 #else
 
-#pragma GCC warning "This platform doesn't have a wire buffer size defined. Defaulting to 32 bytes. Please contribute to this library!"
+#pragma GCC warning                                                                                                    \
+    "This platform doesn't have a wire buffer size defined. Defaulting to 32 bytes. Please contribute to this library!"
 
-//Default to safe 32 bytes
+// Default to safe 32 bytes
 #define I2C_BUFFER_LENGTH_RX 32
 #define I2C_BUFFER_LENGTH_TX 32
 
@@ -98,69 +104,79 @@
 
 struct struct_memorySettings
 {
-  TwoWire *i2cPort;
-  uint8_t deviceAddress;
-  uint32_t memorySize_bytes;
-  uint16_t pageSize_bytes;
-  uint8_t pageWriteTime_ms;
-  bool pollForWriteComplete;
+    TwoWire *i2cPort;
+    uint8_t deviceAddress;
+    uint32_t memorySize_bytes;
+    uint16_t pageSize_bytes;
+    uint8_t pageWriteTime_ms;
+    bool pollForWriteComplete;
 };
 
 class ExternalEEPROM
 {
-public:
-  uint8_t read(uint32_t eepromLocation);
-  void read(uint32_t eepromLocation, uint8_t *buff, uint16_t bufferSize);
-  void write(uint32_t eepromLocation, uint8_t dataToWrite);
-  void write(uint32_t eepromLocation, const uint8_t *dataToWrite, uint16_t blockSize);
+  public:
+    uint8_t read(uint32_t eepromLocation);
+    void read(uint32_t eepromLocation, uint8_t *buff, uint16_t bufferSize);
+    void write(uint32_t eepromLocation, uint8_t dataToWrite);
+    void write(uint32_t eepromLocation, const uint8_t *dataToWrite, uint16_t blockSize);
 
-  bool begin(uint8_t deviceAddress = 0b1010000, TwoWire &wirePort = Wire); //By default use the Wire port
-  bool isConnected(uint8_t i2cAddress = 255);
-  bool isBusy(uint8_t i2cAddress = 255);
-  void erase(uint8_t toWrite = 0x00); //Erase the entire memory. Optional: write a given byte to each spot.
+    bool begin(uint8_t deviceAddress = 0b1010000, TwoWire &wirePort = Wire); // By default use the Wire port
+    bool isConnected(uint8_t i2cAddress = 255);
+    bool isBusy(uint8_t i2cAddress = 255);
+    void erase(uint8_t toWrite = 0x00); // Erase the entire memory. Optional: write a given byte to each spot.
 
-  //void settings(struct_memorySettings newSettings); //Set all the settings using the settings struct
-  void setMemorySize(uint32_t memSize); //Set the size of memory in bytes
-  uint32_t getMemorySize();             //Return size of EEPROM
-  uint32_t length();                    //Return size of EEPROM
-  void setPageSize(uint16_t pageSize);  //Set the size of the page we can write at a time
-  uint16_t getPageSize();
-  void setPageWriteTime(uint8_t writeTimeMS); //Set the number of ms required per page write
-  uint8_t getPageWriteTime();
-  void enablePollForWriteComplete(); //Most EEPROMs all I2C polling of when a write has completed
-  void disablePollForWriteComplete();
-  constexpr uint16_t getI2CBufferSize(); //Return the size of the TX buffer
+    // void settings(struct_memorySettings newSettings); //Set all the settings using the settings struct
+    void setMemorySizeBytes(uint32_t memSize); // Set the size of memory in bytes
+    uint32_t getMemorySizeBytes();             // Return size of EEPROM
+    void setMemorySize(uint32_t memSize);      // Depricated
+    uint32_t getMemorySize();                  // Depricated
 
-  //Functionality to 'get' and 'put' objects to and from EEPROM.
-  template <typename T>
-  T &get(uint32_t idx, T &t)
-  {
-    uint8_t *ptr = (uint8_t *)&t;
-    read(idx, ptr, sizeof(T)); //Address, data, sizeOfData
-    return t;
-  }
+    uint32_t detectMemorySizeBytes(); // Attempts to detect the size of the EEPROM
 
-  template <typename T>
-  const T &put(uint32_t idx, const T &t) //Address, data
-  {
-    const uint8_t *ptr = (const uint8_t *)&t;
-    write(idx, ptr, sizeof(T)); //Address, data, sizeOfData
-    return t;
-  }
-  
-  uint32_t putString(uint32_t eepromLocation, String &strToWrite);
-  void getString(uint32_t eepromLocation, String &strToRead);
+    uint32_t length(); // Return size of EEPROM in bytes
 
-private:
-  // Default settings are for onsemi CAT24C51 512Kbit I2C EEPROM used on SparkFun Qwiic EEPROM Breakout
-  struct_memorySettings settings = {
-      .i2cPort = &Wire,
-      .deviceAddress = 0b1010000,           // 0x50; format is 0b1010 + (A2 A1 A0) or 0b1010 + (B0 A1 A0) for larger (>512kbit) EEPROMs
-      .memorySize_bytes = (uint32_t)512 * 1024 / 8, // equals 64 KB
-      .pageSize_bytes = 64,
-      .pageWriteTime_ms = 5,
-      .pollForWriteComplete = true
-  };
+    void setPageSizeBytes(uint16_t pageSize); // Set the size of the page we can write at a time
+    uint16_t getPageSizeBytes();
+    void setPageSize(uint16_t pageSize);      // Depricated
+    uint16_t getPageSize();                   // Depricated
+
+    void setPageWriteTimeMs(uint8_t writeTimeMS); // Set the number of ms required per page write
+    uint8_t getPageWriteTimeMs();
+    void setPageWriteTime(uint8_t writeTimeMS);   // Depricated
+    uint8_t getPageWriteTime();                   // Depricated
+
+    void enablePollForWriteComplete(); // Most EEPROMs all I2C polling of when a write has completed
+    void disablePollForWriteComplete();
+    constexpr uint16_t getI2CBufferSize(); // Return the size of the TX buffer
+
+    // Functionality to 'get' and 'put' objects to and from EEPROM.
+    template <typename T> T &get(uint32_t idx, T &t)
+    {
+        uint8_t *ptr = (uint8_t *)&t;
+        read(idx, ptr, sizeof(T)); // Address, data, sizeOfData
+        return t;
+    }
+
+    template <typename T> const T &put(uint32_t idx, const T &t) // Address, data
+    {
+        const uint8_t *ptr = (const uint8_t *)&t;
+        write(idx, ptr, sizeof(T)); // Address, data, sizeOfData
+        return t;
+    }
+
+    uint32_t putString(uint32_t eepromLocation, String &strToWrite);
+    void getString(uint32_t eepromLocation, String &strToRead);
+
+  private:
+    // Default settings are for onsemi CAT24C51 512Kbit I2C EEPROM used on SparkFun Qwiic EEPROM Breakout
+    struct_memorySettings settings = {
+        .i2cPort = &Wire,
+        .deviceAddress =
+            0b1010000, // 0x50; format is 0b1010 + (A2 A1 A0) or 0b1010 + (B0 A1 A0) for larger (>512kbit) EEPROMs
+        .memorySize_bytes = (uint32_t)512 * 1024 / 8, // 65,536 bytes = 512-Kbit EEPROM
+        .pageSize_bytes = 64,
+        .pageWriteTime_ms = 5,
+        .pollForWriteComplete = true};
 };
 
 #endif //_SPARKFUN_EXTERNAL_EEPROM_H
