@@ -177,51 +177,82 @@ void ExternalEEPROM::getString(uint32_t eepromLocation, String &strToRead)
 }
 
 // Attempt write-then-reads until failure
-// Start at 128 bit and build up: 256, 512, 896, 1024, 2k, 4k, 8k, 16k, 20k, 32k, 64k, 128k, 256k, 512k, 1M, 2M
+// Start at 128 bit and build up: 256, 1024, 2k, 4k, 8k, 16k, 32k, 64k, 128k, 256k, 512k, 1M
+// Identifies the following EEPROM types and their variants:
+// 24LC00 - 128 bit
+// 24LC01 - 1024 bit
+// 24LC02 - 2048 bit
+// For EEPROMs of 4k, 8k, and 16k bit, there are three bits called
+// 'block select bits' inside the address byte that are used
+// 24LC04 - 4096 bit / 512 bytes
+// 24LC08 - 8192 bit / 1024 bytes
+// 24LC16 - 16384 bit / 2048 bytes
+// For 32k, 64k, 128k, 256k, and 512k bit we need two address bytes
+// 24LC32 - 32768 bit / 4096 bytes
+// 24LC64 - 65536 bit / 8192 bytes
+// 24LC128 - 131072 bit / 16384 bytes
+// 24LC256 - 262144 bit / 32768 bytes
+// 24LC512 - 524288 bit / 65536 bytes
+// At 1Mbit (128,000 byte) there are two address bytes and a block select bit is used
+// but at the upper end of the address bits (so instead of A2/A1/A0 it's B0/A1/A0).
+// 24LC1024 - 1024000 bit / 128000 byte
 uint32_t ExternalEEPROM::detectMemorySizeBytes()
 {
     uint32_t eepromLocation = (128 / 8) - 1; // Start at the last spot of the smallest EEPROM
     uint32_t lastGoodLocation = 0;
     uint8_t i2cAddress = settings.deviceAddress;
 
+    // Check for 24LC04/8/16
+    if (isConnected(i2cAddress | 0b001) == true)
+    {
+        if (isConnected(i2cAddress | 0b010) == true)
+        {
+            if (isConnected(i2cAddress | 0b100) == true)
+            {
+                return (2048); // 24LC16 - 2048 bytes
+            }
+            return (1024); // 24LC08 - 1024 bytes
+        }
+        return (512); // 24LC04 - 512 bytes
+    }
+
+    // Check for 24LC1024
+    if (isConnected(i2cAddress | 0b100) == true)
+        return (128000); // 24LC1024 - 128000 bytes
+
+    // We've eliminated all the types we can. Now We have to do a read-write-read-write to test.
     while (1)
     {
         byte magicValue = random(0, 254); // Avoid 0xFF = 255. Assumes user has randomSeed()ed something.
 
-        setMemorySize(eepromLocation + 1);
+        setMemorySizeBytes(eepromLocation + 1);
+
+        // Read and store before we start (potentially) writing
+        byte originalValue = read(eepromLocation);
 
         // Write beyond the edge of this block
-        write(eepromLocation, magicValue);
+        write(eepromLocation, magicValue); // Will use a 1 or 2 byte address depending on setMemorySizeBytes()
 
         // Read data
         byte found = read(eepromLocation);
-        if (found != magicValue && eepromLocation < 4096) //Write failed at lower locations
+        if (found != magicValue && eepromLocation < 4096) // Write failed at lower locations
         {
-            // We fail to write at lower locations because this is a dual page device
+            // We failed to write at lower locations because this is a two address type device
             eepromLocation = 2047; // Jump to two byte addresses
         }
-        else if (found != magicValue) //Write failed
+        else if (found != magicValue) // Write failed
         {
-            //Continue to increase EEPROM location and writes
+            // Continue to increase EEPROM location and writes
         }
-        else //Write was successful
+        else // Write was successful
         {
+            // Return spot to its original value
+            write(eepromLocation, originalValue);
+
             lastGoodLocation = eepromLocation;
         }
 
-        // 1Mbit devices change the I2C address at bit 3
-        if (eepromLocation >= (65536 * 1) - 1)
-        {
-            // Check to see if a device at the new I2C address responds
-            byte testAddress = settings.deviceAddress |= 0b100; // Set the block bit to 1
-
-            if (isConnected(testAddress) == false)
-            {
-                break; // Device does not have upper blocks, give up
-            }
-        }
-
-        if (eepromLocation >= (65536 * 2) - 1) // Limit to 1MBit
+        if (eepromLocation >= (65536 * 1) - 1) // Limit to 512kBit
             break;
 
         // If good, increase size and loop
