@@ -179,9 +179,9 @@ void ExternalEEPROM::getString(uint32_t eepromLocation, String &strToRead)
 // Attempt write-then-reads until failure
 // Start at 128 bit and build up: 256, 1024, 2k, 4k, 8k, 16k, 32k, 64k, 128k, 256k, 512k, 1M
 // Identifies the following EEPROM types and their variants:
-// 24LC00 - 128 bit
-// 24LC01 - 1024 bit
-// 24LC02 - 2048 bit
+// 24LC00 - 128 bit / 16 bytes
+// 24LC01 - 1024 bit / 128 bytes
+// 24LC02 - 2048 bit / 256 bytes
 // For EEPROMs of 4k, 8k, and 16k bit, there are three bits called
 // 'block select bits' inside the address byte that are used
 // 24LC04 - 4096 bit / 512 bytes
