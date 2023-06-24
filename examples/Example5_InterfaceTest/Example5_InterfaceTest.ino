@@ -48,8 +48,8 @@ void setup()
   }
   Serial.println("Memory detected!");
 
-  myMem.setMemorySize(512 * 1024 / 8); //Qwiic EEPROM is the 24512C (512k bit)
-  //myMem.setPageSize(128);
+  myMem.setMemorySizeBytes(512 * 1024 / 8); //Qwiic EEPROM is the 24512C (512k bit)
+  //myMem.setPageSizeBytes(128);
   //myMem.disablePollForWriteComplete();
 
   bool allTestsPassed = true;
@@ -280,7 +280,7 @@ void setup()
   randomLocation = random(0, myMem.length());
 
   Serial.print("Calculated time to record array of " + (String)sizeof(myChars) + " characters: ~");
-  Serial.print((uint32_t)sizeof(myChars) / myMem.getPageSize() * myMem.getPageWriteTime());
+  Serial.print((uint32_t)sizeof(myChars) / myMem.getPageSizeBytes() * myMem.getPageWriteTimeMs());
   Serial.println("ms");
 
   startTime = micros();

@@ -71,8 +71,8 @@ void setup()
   beginSD();
 
   //Set settings for a 24LC1025
-  myMem.setMemorySize(1024 * 1024 / 8); //In bytes. 1024 Kbit = 128 KB
-  myMem.setPageSize(128);           //In bytes.
+  myMem.setMemorySizeBytes(1024 * 1024 / 8); //In bytes. 1024 Kbit = 128 KB
+  myMem.setPageSizeBytes(128);           //In bytes.
   myMem.enablePollForWriteComplete();
 }
 
@@ -208,20 +208,20 @@ bool verifyFileOnEEPROM(char *fileName)
 
   int error = 0;
   uint32_t EEPROMLocation = 0;
-  uint8_t *onEEPROM = (uint8_t *)malloc(myMem.getPageSize()); //Create a buffer to hold a page
+  uint8_t *onEEPROM = (uint8_t *)malloc(myMem.getPageSizeBytes()); //Create a buffer to hold a page
 
   while (binFile.available())
   {
-    uint8_t bytesToRead = myMem.getPageSize();
+    uint8_t bytesToRead = myMem.getPageSizeBytes();
 
-    if (EEPROMLocation + bytesToRead > myMem.getMemorySize())
-      bytesToRead = myMem.getMemorySize() - EEPROMLocation;
+    if (EEPROMLocation + bytesToRead > myMem.getMemorySizeBytes())
+      bytesToRead = myMem.getMemorySizeBytes() - EEPROMLocation;
 
     if (bytesToRead > binFile.available())
       bytesToRead = binFile.available();
 
     //myMem.get(EEPROMLocation, onEEPROM); //Location, data
-    myMem.read(EEPROMLocation, onEEPROM, myMem.getPageSize()); //Location, data
+    myMem.read(EEPROMLocation, onEEPROM, myMem.getPageSizeBytes()); //Location, data
 
     //Verify what was read from the EEPROM matches the file
     for (int x = 0; x < bytesToRead; x++)
@@ -247,7 +247,7 @@ bool verifyFileOnEEPROM(char *fileName)
 
     EEPROMLocation += bytesToRead;
 
-    if (EEPROMLocation % (myMem.getPageSize() * 128) == 0)
+    if (EEPROMLocation % (myMem.getPageSizeBytes() * 128) == 0)
       Serial.print(F("."));
 
     if (digitalRead(PIN_STAT_LED) == LOW)
@@ -296,7 +296,7 @@ bool writeFileToEEPROM(char *fileName)
   Serial.print((timePerDataTransfer + timePerPageWrite) * writesRequired, 3);
   Serial.println(F("s"));
 
-  uint8_t *buffer = (uint8_t *)malloc(myMem.getPageSize()); //Create a buffer to hold a page
+  uint8_t *buffer = (uint8_t *)malloc(myMem.getPageSizeBytes()); //Create a buffer to hold a page
   uint8_t bufferLocation = 0;
 
   uint32_t EEPROMLocation = 0;
@@ -307,16 +307,16 @@ bool writeFileToEEPROM(char *fileName)
     buffer[bufferLocation++] = binFile.read();
 
     //If the buffer if full, record to EEPROM
-    if (bufferLocation == myMem.getPageSize())
+    if (bufferLocation == myMem.getPageSizeBytes())
     {
       bufferLocation = 0;
 
       //Record buffer to EEPROM
-      myMem.write(EEPROMLocation, buffer, myMem.getPageSize()); //Location, data
+      myMem.write(EEPROMLocation, buffer, myMem.getPageSizeBytes()); //Location, data
 
-      EEPROMLocation += myMem.getPageSize();
+      EEPROMLocation += myMem.getPageSizeBytes();
 
-      if (EEPROMLocation % (myMem.getPageSize() * 128) == 0)
+      if (EEPROMLocation % (myMem.getPageSizeBytes() * 128) == 0)
         Serial.print(F("."));
 
       if (digitalRead(PIN_STAT_LED) == LOW)

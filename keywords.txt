@@ -18,11 +18,17 @@ isBusy	KEYWORD2
 read	KEYWORD2
 write	KEYWORD2
 erase	KEYWORD2
+setMemorySizeBytes	KEYWORD2
+getMemorySizeBytes	KEYWORD2
 setMemorySize	KEYWORD2
 getMemorySize	KEYWORD2
 length	KEYWORD2
+setPageSizeBytes	KEYWORD2
+getPageSizeBytes	KEYWORD2
 setPageSize	KEYWORD2
 getPageSize	KEYWORD2
+setPageWriteTimeMs	KEYWORD2
+getPageWriteTimeMs	KEYWORD2
 setPageWriteTime	KEYWORD2
 getPageWriteTime	KEYWORD2
 enablePollForWriteComplete	KEYWORD2

@@ -45,10 +45,10 @@ void setup()
   Serial.println("Memory detected!");
 
   //Set settings for this EEPROM
-  myMem.setMemorySize(512 * 1024 / 8); //In bytes. 512kbit = 64kbyte
-  myMem.setPageSize(128); //In bytes. Has 128 byte page size.
+  myMem.setMemorySizeBytes(512 * 1024 / 8); //In bytes. 512kbit = 64kbyte
+  myMem.setPageSizeBytes(128); //In bytes. Has 128 byte page size.
   myMem.enablePollForWriteComplete(); //Supports I2C polling of write completion
-  myMem.setPageWriteTime(5); //5 ms max write time
+  myMem.setPageWriteTimeMs(5); //5 ms max write time
 
   Serial.print("Mem size in bytes: ");
   Serial.println(myMem.length());
