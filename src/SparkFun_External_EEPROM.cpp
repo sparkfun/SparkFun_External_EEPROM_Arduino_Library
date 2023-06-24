@@ -244,8 +244,10 @@ uint8_t ExternalEEPROM::read(uint32_t eepromLocation)
 // Bulk read from EEPROM
 // Handles breaking up read amt into 32 byte chunks (can be overriden with setI2CBufferSize)
 // Handles a read that straddles the 512kbit barrier
-void ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t bufferSize)
+int ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t bufferSize)
 {
+    int result = 0;
+
     uint16_t received = 0;
     while (received < bufferSize)
     {
@@ -272,14 +274,14 @@ void ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t buffe
         }
         // See if EEPROM is available or still writing a previous request
         while (settings.pollForWriteComplete && isBusy(i2cAddress) == true) // Poll device
-            delayMicroseconds(100); // This shortens the amount of time waiting between writes but hammers the I2C bus
+            delayMicroseconds(100);                                         // This shortens the amount of time waiting between writes but hammers the I2C bus
 
         settings.i2cPort->beginTransmission(i2cAddress);
-        if (getMemorySize() > 2048)
+        if (getMemorySizeBytes() > 2048)
             settings.i2cPort->write((uint8_t)((eepromLocation + received) >> 8)); // MSB
         settings.i2cPort->write((uint8_t)((eepromLocation + received) & 0xFF));   // LSB
 
-        settings.i2cPort->endTransmission();
+        result = settings.i2cPort->endTransmission();
 
         settings.i2cPort->requestFrom((uint8_t)i2cAddress, (size_t)amtToRead);
 
@@ -288,19 +290,25 @@ void ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t buffe
 
         received += amtToRead;
     }
+
+    return (result);
 }
 
 // Write a byte to a given location
-void ExternalEEPROM::write(uint32_t eepromLocation, uint8_t dataToWrite)
+int ExternalEEPROM::write(uint32_t eepromLocation, uint8_t dataToWrite)
 {
     if (read(eepromLocation) != dataToWrite) // Update only if data is new
-        write(eepromLocation, &dataToWrite, 1);
+        return (write(eepromLocation, &dataToWrite, 1));
+    return (0);
 }
 
 // Write large bulk amounts
 // Limits writes to the I2C buffer size (default is 32 bytes)
-void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, uint16_t bufferSize)
+// Returns the result of the I2C endTransmission
+int ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, uint16_t bufferSize)
 {
+    int result = 0;
+
     // Error check
     if (eepromLocation + bufferSize >= settings.memorySize_bytes)
         bufferSize = settings.memorySize_bytes - eepromLocation;
@@ -339,21 +347,23 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
 
         // See if EEPROM is available or still writing a previous request
         while (settings.pollForWriteComplete && isBusy(i2cAddress) == true) // Poll device
-            delayMicroseconds(100); // This shortens the amount of time waiting between writes but hammers the I2C bus
+            delayMicroseconds(100);                                         // This shortens the amount of time waiting between writes but hammers the I2C bus
 
         settings.i2cPort->beginTransmission(i2cAddress);
-        if (getMemorySize() > 2048) // Device larger than 16,384 bits have two byte addresses
+        if (getMemorySizeBytes() > 2048)                                          // Device larger than 16,384 bits have two byte addresses
             settings.i2cPort->write((uint8_t)((eepromLocation + recorded) >> 8)); // MSB
         settings.i2cPort->write((uint8_t)((eepromLocation + recorded) & 0xFF));   // LSB
 
         for (uint8_t x = 0; x < amtToWrite; x++)
             settings.i2cPort->write(dataToWrite[recorded + x]);
 
-        settings.i2cPort->endTransmission(); // Send stop condition
+        result = settings.i2cPort->endTransmission(); // Send stop condition
 
         recorded += amtToWrite;
 
         if (settings.pollForWriteComplete == false)
             delay(settings.pageWriteTime_ms); // Delay the amount of time to record a page
     }
+
+    return (result);
 }
