@@ -39,6 +39,7 @@ setI2CBufferSize	KEYWORD2
 getI2CBufferSize	KEYWORD2
 putString	KEYWORD2
 getString	KEYWORD2
+detectMemorySizeBytes	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
