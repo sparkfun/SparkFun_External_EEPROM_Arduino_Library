@@ -1,5 +1,5 @@
 /*
-  Read and write settings and calibration data to an external I2C EEPROM
+  Set manual specs of an external I2C EEPROM
   By: Nathan Seidle
   SparkFun Electronics
   Date: December 11th, 2019
@@ -10,9 +10,11 @@
 
   This example demonstrates how to set the various settings for a given EEPROM.
   Read the datasheet! Each EEPROM will have specific values for:
-  Overall EEPROM size in bytes (512kbit = 65536, 256kbit = 32768)
-  Bytes per page write (64 and 128 are common)
-  Whether write polling is supported
+    Overall EEPROM size in bytes (512kbit = 65536, 256kbit = 32768).
+    Bytes per page write (1, 8, 16, 32, 64, and 128 are common).
+    Whether write polling is supported.
+  Note: This will overwrite the auto-detected specs. It is recommended to use example 2
+  to detect the device's settings then you can set them before 
   
   The I2C EEPROM should have all its ADR pins set to GND (0). This is default
   on the Qwiic board.
@@ -57,7 +59,7 @@ void setup()
   myMem.put(20, myValue3); //(location, data)
   float myRead3;
   myMem.get(20, myRead3); //location to read, thing to put data into
-  Serial.print("I read: ");
+  Serial.print("I read (should be -7.35): ");
   Serial.println(myRead3);
   
 }
