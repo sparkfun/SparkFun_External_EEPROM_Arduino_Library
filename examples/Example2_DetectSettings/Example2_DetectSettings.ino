@@ -42,7 +42,7 @@ void setup()
   //myMem.setPageSizeBytes(16);
   //myMem.setMemorySizeBytes(2048);
 
-  //If specs are not available at start, they are auto-detected
+  //If specs are not available at begin(), they are auto-detected
   if (myMem.begin() == false)
   {
     Serial.println("No memory detected. Freezing.");
@@ -51,12 +51,20 @@ void setup()
   }
   Serial.println("Memory detected!");
 
-   Serial.print("Detected number of address bytes: ");
+  //Detection functions can also be called/re-run after begin()
+  Serial.print("Detected number of address bytes: ");
   Serial.println(myMem.detectAddressBytes());
 
+  //Page size detection is limited by the platform. For example, the Uno has a I2C buffer
+  //that is 32 bytes. Therefor, page sizes above 16 bytes cannot be detected or used. For maximum
+  //write speeds to an EEPROM, use a platform with a large I2C buffer (ie ESP32 is 128 bytes)
+  //and an EEPROM with a large page size (24XX512 is 128 bytes). 
   Serial.print("Detected pageSizeBytes: ");
   Serial.println(myMem.detectPageSizeBytes());
 
+  //detectWriteTimeMs is *not* automatically called at begin() and is
+  //generally not needed. Write times are guaranteed to be under 5ms,
+  //and we use polling by default so its use is limited.
   Serial.print("Detected page write time (ms): ");
   Serial.println(myMem.detectWriteTimeMs());
 

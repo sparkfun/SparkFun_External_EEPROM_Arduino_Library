@@ -39,8 +39,24 @@ void setup()
   }
   Serial.println("Memory detected!");
 
-  Serial.print("Mem size in bytes: ");
-  Serial.println(myMem.length());
+  uint32_t eepromSizeBytes = myMem.getMemorySizeBytes();
+  Serial.print("Detected EEPROM size (bytes): ");
+  Serial.print(eepromSizeBytes);
+  Serial.print(" - EEPROM Type: 24XX");
+  if (eepromSizeBytes == 16)
+    Serial.print("00");
+  else
+  {
+    if ((eepromSizeBytes * 8 / 1024) < 10) Serial.print("0");
+    Serial.print(eepromSizeBytes * 8 / 1024);
+  }
+  Serial.println();
+
+  Serial.print("Detected number of address bytes: ");
+  Serial.println(myMem.getAddressBytes());
+
+  Serial.print("Detected pageSizeBytes: ");
+  Serial.println(myMem.getPageSizeBytes());
 
   //Yes you can read and write bytes, but you shouldn't!
   byte myValue1 = 200;
