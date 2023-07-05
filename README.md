@@ -1,15 +1,15 @@
 SparkFun External EEPROM Arduino Library
 ===========================================================
 
-![SparkFun Qwiic EEPROM](https://cdn.sparkfun.com//assets/parts/1/3/0/0/8/14764-Qwiic_EEPROM_-_512Kbit-01.jpg)
+![SparkFun Qwiic EEPROM](https://cdn.sparkfun.com//assets/parts/1/7/7/0/1/18355-SparkFun_Qwiic_EEPROM_Breakout_-_512Kbit-01.jpg)
 
-[*SparkFun Qwiic EEPROM (SPX-14764)*](https://www.sparkfun.com/products/14764)
+[*SparkFun Qwiic EEPROM (COM-18355)*](https://www.sparkfun.com/products/18355)
 
 A simple-to-use I2C library for talking to any EEPROM. It uses the same template system found in the Arduino EEPROM library so you can use the same get() and put() functions.
 
 The device-specific specs (overall size, page size, write times, etc) are auto-detected. This library works with all types and allows the various settings to be set at runtime. All read and write restrictions associated with pages are taken care of. You can access the external memory as if it was contiguous.
 
-Best used with the Qwiic EEPROM: https://www.sparkfun.com/products/14764
+Best used with the Qwiic EEPROM: https://www.sparkfun.com/products/18355
 
 This library can be installed via the Arduino Library manager. Search for **SparkFun External EEPROM**.
 
