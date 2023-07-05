@@ -378,7 +378,7 @@ uint16_t ExternalEEPROM::detectPageSizeBytes()
     for (uint16_t x = 0; x < maxPageSize; x++)
         originalValuesArray[x] = read(testLocation + x); // Read byte wise to avoid page size limitations
 
-    uint8_t pageSizeBytes = 8;
+    uint16_t pageSizeBytes = 8;
     bool detectedPageSize = false;
     while (1)
     {
@@ -437,7 +437,7 @@ uint16_t ExternalEEPROM::detectPageSizeBytes()
             pageSizeBytes *= 2;
         else if (pageSizeBytes == 32)
             pageSizeBytes = 128;
-        else if (pageSizeBytes = maxPageSize)
+        else if (pageSizeBytes == maxPageSize)
             break; // EEPROMs with larger than 256 byte page writes are not known at this time.
 
         // We can't write more than I2C_BUFFER_LENGTH_TX at a time so that is the limit of our pageSize testing.
