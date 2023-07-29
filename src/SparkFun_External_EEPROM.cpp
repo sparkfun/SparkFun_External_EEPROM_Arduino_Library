@@ -296,46 +296,58 @@ uint8_t ExternalEEPROM::detectAddressBytes()
     uint32_t originalMemorySize = settings.memorySize_bytes;
     uint16_t originalPageSize = settings.pageSize_bytes;
 
-    // Read and store before we start (potentially) writing
-    // This will fail on two byte address EEPROMs when the memory size is below 4096 bytes
-    uint8_t locationValueOriginal = read(testLocation);
-
-    // Serial.print("locationValueOriginal: 0x");
-    // Serial.print(locationValueOriginal, HEX);
-
     setMemorySizeBytes(128); // Assume the smallest memory size during test
     setPageSizeBytes(1);     // Assume a page size
+
+    uint8_t locationValueOriginal = 0;
 
     uint8_t addressBytes = 1;
     for (; addressBytes < 3; addressBytes++)
     {
         setAddressBytes(addressBytes); // Start test at one byte
 
-        // Avoid the default state of 0xFF = 255 and 0. Assumes user has randomSeed()ed something.
-        // Do not use the original value
-        // Do not use the value found in the next location either
-        uint8_t magicValue = 0;
-        do
+        // Read and store before we start (potentially) writing
+        // This will fail on two byte address EEPROMs when the memory size is below 4096 bytes
+        uint8_t i2cResponse = read(testLocation, &locationValueOriginal, 1);
+
+        // Check to see if the device ACK'd
+        if (i2cResponse == 0)
         {
-            magicValue = random(1, 255); // (Inclusive, exclusive)
-        } while (magicValue == locationValueOriginal);
+            // Serial.print("locationValueOriginal: 0x");
+            // Serial.print(locationValueOriginal, HEX);
 
-        // Serial.print(" writing: 0x");
-        // Serial.print(magicValue, HEX);
+            // Avoid the default state of 0xFF = 255 and 0. Assumes user has randomSeed()ed something.
+            // Do not use the original value
+            // Do not use the value found in the next location either
+            uint8_t magicValue = 0;
+            do
+            {
+                magicValue = random(1, 255); // (Inclusive, exclusive)
+            } while (magicValue == locationValueOriginal);
 
-        // Write this new value
-        write(testLocation, magicValue); // Will use a 1 or 2 byte address depending on setMemorySizeBytes()
+            // Serial.print(" writing: 0x");
+            // Serial.print(magicValue, HEX);
 
-        // Read data back
-        uint8_t locationValue = read(testLocation);
-        // Serial.print(" read: 0x");
-        // Serial.print(locationValue, HEX);
-        // Serial.print(" - ");
+            // Write this new value
+            write(testLocation, magicValue); // Will use a 1 or 2 byte address depending on setMemorySizeBytes()
 
-        if (locationValue == magicValue)
+            // Read data back
+            uint8_t locationValue = read(testLocation);
+            // Serial.print(" read: 0x");
+            // Serial.print(locationValue, HEX);
+            // Serial.print(" - ");
+
+            if (locationValue == magicValue)
+            {
+                // Successful write. We've determined the number of address bytes
+                break;
+            }
+        }
+        else
         {
-            // Successful write. We've determined the number of address bytes
-            break;
+            // Serial.print(" device failed ack with: ");
+            // Serial.print(i2cResponse);
+            // Serial.println(". Moving to next address byte size.");
         }
     }
 
@@ -411,14 +423,6 @@ uint16_t ExternalEEPROM::detectPageSizeBytes()
                 // Serial.print(pageSizeBytes);
                 // Serial.print(" write failed. Previous page size is the answer ");
 
-                // Reduce the page size to the last value
-                if (pageSizeBytes == 32 || pageSizeBytes == 16 || pageSizeBytes == 256)
-                    pageSizeBytes /= 2;
-                else if (pageSizeBytes == 128)
-                    pageSizeBytes = 32;
-                else if (pageSizeBytes == 8)
-                    pageSizeBytes = 1;
-
                 detectedPageSize = true;
 
                 break;
@@ -437,10 +441,12 @@ uint16_t ExternalEEPROM::detectPageSizeBytes()
             pageSizeBytes *= 2;
         else if (pageSizeBytes == 32)
             pageSizeBytes = 128;
-        else if (pageSizeBytes == maxPageSize)
+        else if (pageSizeBytes > maxPageSize)
             break; // EEPROMs with larger than 256 byte page writes are not known at this time.
 
-        // We can't write more than I2C_BUFFER_LENGTH_TX at a time so that is the limit of our pageSize testing.
+        // The I2C_BUFFER_LENGTH of this platform must be large enough for the pageSizeBytes + deviceID byte + address byte(s). 
+        // For example, if the page size is 32, we need a buffer that is 34 bytes. However, many platforms (ie Uno) have only 
+        // 32 bytes. We therefor have to give up and use page writes up to the size of I2C_BUFFER_LENGTH_TX.
         if (pageSizeBytes > I2C_BUFFER_LENGTH_TX)
         {
             // Serial.print("Page size test limited by platform I2C buffer of: ");
@@ -449,33 +455,41 @@ uint16_t ExternalEEPROM::detectPageSizeBytes()
         }
     }
 
+    // Reduce the page size to the last value
+    if (pageSizeBytes == 32 || pageSizeBytes == 16 || pageSizeBytes == 256 || pageSizeBytes == 512)
+        pageSizeBytes /= 2;
+    else if (pageSizeBytes == 128)
+        pageSizeBytes = 32;
+    else if (pageSizeBytes == 8)
+        pageSizeBytes = 1;
+
     settings.pageSize_bytes = pageSizeBytes;
 
     // Write original chunk to EEPROM
-    write(testLocation, originalValuesArray, pageSizeBytes);
+    write(testLocation, originalValuesArray, maxPageSize);
 
     return (settings.pageSize_bytes);
 }
 
 // Attempts write-then-reads until failure to determine memory bounds
 // Identifies the following EEPROM types and their variants:
-// 24LC00 - 128 bit / 16 bytes - 1 address byte, 1 byte page size
-// 24LC01 - 1024 bit / 128 bytes - 1 address byte, 8 byte page size
-// 24LC02 - 2048 bit / 256 bytes - 1 address byte, 8 byte page size
-// 24LC04 - 4096 bit / 512 bytes - 1 address byte, 16 byte page size
-// 24LC08 - 8192 bit / 1024 bytes - 1 address byte, 16 byte page size
-// 24LC16 - 16384 bit / 2048 bytes - 1 address byte, 16 byte page size
-// 24LC32 - 32768 bit / 4096 bytes - 2 address bytes, 32 byte page size
-// 24LC64 - 65536 bit / 8192 bytes - 2 address bytes, 32 byte page size
-// 24LC128 - 131072 bit / 16384 bytes - 2 address bytes, 64 byte page size
-// 24LC256 - 262144 bit / 32768 bytes - 2 address bytes, 64 byte page size
-// 24LC512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page size
-// 24LC1024 - 1024000 bit / 128000 byte - 2 address bytes, 128 byte page size
-// 24CM02 - 2097152 bit / 262144 byte - 2 address bytes, 256 byte page size
+// 24XX00 - 128 bit / 16 bytes - 1 address byte, 1 byte page size
+// 24XX01 - 1024 bit / 128 bytes - 1 address byte, 8 byte page size
+// 24XX02 - 2048 bit / 256 bytes - 1 address byte, 8 byte page size
+// 24XX04 - 4096 bit / 512 bytes - 1 address byte, 16 byte page size
+// 24XX08 - 8192 bit / 1024 bytes - 1 address byte, 16 byte page size
+// 24XX16 - 16384 bit / 2048 bytes - 1 address byte, 16 byte page size
+// 24XX32 - 32768 bit / 4096 bytes - 2 address bytes, 32 byte page size
+// 24XX64 - 65536 bit / 8192 bytes - 2 address bytes, 32 byte page size
+// 24XX128 - 131072 bit / 16384 bytes - 2 address bytes, 64 byte page size
+// 24XX256 - 262144 bit / 32768 bytes - 2 address bytes, 64 byte page size
+// 24XX512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page size
+// 24XX1024 - 1024000 bit / 128000 byte - 2 address bytes, 128 byte page size
+// 24XXM02 - 2097152 bit / 262144 byte - 2 address bytes, 256 byte page size
 // For EEPROMs of 4k, 8k, and 16k bit, there are three bits called
 // 'block select bits' inside the address byte that are used
 // For 32k, 64k, 128k, 256k, and 512k bit we need two address bytes
-// At 1Mbit (128,000 byte) and above there are two address bytes and a block select bit 
+// At 1Mbit (128,000 byte) and above there are two address bytes and a block select bit
 // is used but at the upper end of the address bits (so instead of A2/A1/A0 it's B0/A1/A0).
 uint32_t ExternalEEPROM::detectMemorySizeBytes()
 {
@@ -771,7 +785,14 @@ int ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, u
         settings.i2cPort->write((uint8_t)((eepromLocation + recorded) & 0xFF));   // LSB
 
         for (uint16_t x = 0; x < amtToWrite; x++)
+        {
             settings.i2cPort->write(dataToWrite[recorded + x]);
+            // Serial.print("writing: ");
+            // Serial.print(dataToWrite[recorded + x]);
+            // Serial.print(" to location: ");
+            // Serial.print(eepromLocation + recorded + x);
+            // Serial.println();
+        }
 
         result = settings.i2cPort->endTransmission(); // Send stop condition
 
