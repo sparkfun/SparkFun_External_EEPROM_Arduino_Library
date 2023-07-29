@@ -36,19 +36,19 @@ bool ExternalEEPROM::begin(uint8_t deviceAddress, TwoWire &wirePort)
         return false;
     }
 
-    if (settings.addressSize_bytes == 0)
-    {
-        detectAddressBytes();
-        // Serial.print("Detected number of address bytes: ");
-        // Serial.println(getAddressBytes());
-    }
+    // if (settings.addressSize_bytes == 0)
+    // {
+    //     detectAddressBytes();
+    //     // Serial.print("Detected number of address bytes: ");
+    //     // Serial.println(getAddressBytes());
+    // }
 
-    if (settings.pageSize_bytes == 0)
-    {
-        detectPageSizeBytes();
-        // Serial.print("Detected page size: ");
-        // Serial.println(getPageSizeBytes());
-    }
+    // if (settings.pageSize_bytes == 0)
+    // {
+    //     detectPageSizeBytes();
+    //     // Serial.print("Detected page size: ");
+    //     // Serial.println(getPageSizeBytes());
+    // }
 
     // if (settings.writeTime_ms == 0)
     // {
@@ -57,12 +57,12 @@ bool ExternalEEPROM::begin(uint8_t deviceAddress, TwoWire &wirePort)
     //     Serial.println(getWriteTimeMs());
     // }
 
-    if (settings.memorySize_bytes == 0)
-    {
-        detectMemorySizeBytes();
-        // Serial.print("Detected memory size: ");
-        // Serial.println(getMemorySizeBytes());
-    }
+    // if (settings.memorySize_bytes == 0)
+    // {
+    //     detectMemorySizeBytes();
+    //     // Serial.print("Detected memory size: ");
+    //     // Serial.println(getMemorySizeBytes());
+    // }
 
     return true;
 }
