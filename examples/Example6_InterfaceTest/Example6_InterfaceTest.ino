@@ -40,6 +40,13 @@ void setup()
   Wire.setClock(400000);
   //Wire.setClock(1000000);
 
+  //The memory specs can be set before begin() to skip the auto-detection delay and write wear
+  //24XX04 - 4096 bit / 512 bytes - 1 address byte, 16 byte page size
+  myMem.setAddressBytes(1);
+  myMem.setPageSizeBytes(16);
+  myMem.setMemorySizeBytes(512);
+
+
   if (myMem.begin() == false)
   {
     Serial.println("No memory detected. Freezing.");
@@ -48,14 +55,27 @@ void setup()
   }
   Serial.println("Memory detected!");
 
-  myMem.setMemorySizeBytes(512 * 1024 / 8); //Qwiic EEPROM is the 24512C (512k bit)
-  //myMem.setPageSizeBytes(128);
-  //myMem.disablePollForWriteComplete();
+  uint32_t eepromSizeBytes = myMem.getMemorySizeBytes();
+  Serial.print("Detected EEPROM type: 24XX");
+  if (eepromSizeBytes == 16)
+    Serial.print("00");
+  else
+  {
+    if ((eepromSizeBytes * 8 / 1024) < 10) Serial.print("0");
+    Serial.print(eepromSizeBytes * 8 / 1024);
+  }
+  Serial.print(" - bytes: ");
+  Serial.print(eepromSizeBytes);
+  Serial.println();
+
+  //  Serial.print("Detected number of address bytes: ");
+  //  Serial.println(myMem.getAddressBytes());
+  //
+  //  Serial.print("Detected pageSizeBytes: ");
+  //  Serial.println(myMem.getPageSizeBytes());
+  //
 
   bool allTestsPassed = true;
-
-  Serial.print("Mem size in bytes: ");
-  Serial.println(myMem.length());
 
   //Erase test
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -73,27 +93,50 @@ void setup()
   Serial.println("8 bit tests");
   byte myValue1 = 200;
   byte myValue2 = 23;
-  randomLocation = random(0, myMem.length());
+  randomLocation = random(0, myMem.length() - (sizeof(byte) * 2));
 
   startTime = micros();
   myMem.write(randomLocation, myValue1); //(location, data)
+  while (myMem.isConnected() == false); //Wait for write to complete
   endTime = micros();
-  myMem.put(randomLocation + 1, myValue2);
-  Serial.println("Time to record byte: " + (String)(endTime - startTime) + " us");
+  Serial.print("Time to record byte: ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
+
+  myMem.put(randomLocation + sizeof(byte), myValue2);
+  while (myMem.isConnected() == false); //Wait for write to complete
 
   startTime = micros();
   myMem.write(randomLocation, myValue1); //(location, data)
+  while (myMem.isConnected() == false); //Wait for write to complete
   endTime = micros();
-  Serial.println("Time to write identical byte to same location (should be ~0ms): " + (String)(endTime - startTime) + " us");
+  Serial.print("Time to write identical byte to same location (should be ~0ms): ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
 
   startTime = micros();
   byte response1 = myMem.read(randomLocation);
   endTime = micros();
-  Serial.println("Time to read byte: " + (String)(endTime - startTime) + " us");
+  Serial.print("Time to read byte: ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
 
-  byte response2 = myMem.read(randomLocation + 1);
-  Serial.println("Location " + (String)randomLocation + " should be " + (String)myValue1 + ": " + (String)response1);
-  Serial.println("Location " + (String)(randomLocation + 1) + " should be " + (String)myValue2 + ": " + (String)response2);
+while(1);
+
+  byte response2 = myMem.read(randomLocation + sizeof(byte));
+  Serial.print("Location ");
+  Serial.print(randomLocation);
+  Serial.print(" should be ");
+  Serial.print(myValue1);
+  Serial.print(": ");
+  Serial.println(response1);
+
+  Serial.print("Location ");
+  Serial.print(randomLocation + sizeof(byte));
+  Serial.print(" should be ");
+  Serial.print(myValue2);
+  Serial.print(": ");
+  Serial.println(response2);
   if (myValue1 != response1)
     allTestsPassed = false;
   if (myValue2 != response2)
@@ -107,14 +150,16 @@ void setup()
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   uint16_t myValue3 = 3411;
   int16_t myValue4 = -366;
-  randomLocation = random(0, myMem.length());
+  randomLocation = random(0, myMem.length() - (sizeof(int16_t) * 2));
 
   startTime = micros();
   myMem.put(randomLocation, myValue3);
   endTime = micros();
-  Serial.println("Time to record int16: " + (String)(endTime - startTime) + " us");
+  Serial.print("Time to record int16: ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
 
-  myMem.put(randomLocation + 2, myValue4);
+  myMem.put(randomLocation + sizeof(int16_t), myValue4);
 
   uint16_t response3;
   int16_t response4;
@@ -122,11 +167,25 @@ void setup()
   startTime = micros();
   myMem.get(randomLocation, response3);
   endTime = micros();
-  Serial.println("Time to read int16: " + (String)(endTime - startTime) + " us");
+  Serial.print("Time to read int16: ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
 
-  myMem.get(randomLocation + 2, response4);
-  Serial.println("Location " + (String)randomLocation + " should be " + (String)myValue3 + ": " + (String)response3);
-  Serial.println("Location " + (String)(randomLocation + 2) + " should be " + (String)myValue4 + ": " + (String)response4);
+  myMem.get(randomLocation + sizeof(int16_t), response4);
+  Serial.print("Location ");
+  Serial.print(randomLocation);
+  Serial.print(" should be ");
+  Serial.print(myValue3);
+  Serial.print(": ");
+  Serial.println(response3);
+
+  Serial.print("Location ");
+  Serial.print(randomLocation + sizeof(int16_t));
+  Serial.print(" should be ");
+  Serial.print(myValue4);
+  Serial.print(": ");
+  Serial.println(response4);
+
   if (myValue3 != response3)
     allTestsPassed = false;
   if (myValue4 != response4)
@@ -134,20 +193,23 @@ void setup()
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   Serial.println("");
-  Serial.println("32 bit tests");
+  Serial.println("int tests");
 
-  //int and unsigned int (32) tests
+  //int and unsigned int tests
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  Serial.println("Size of int: " + (String)sizeof(int));
-  int myValue5 = -245000;
-  unsigned int myValue6 = 400123;
-  randomLocation = random(0, myMem.length());
+  Serial.print("Size of int: ");
+  Serial.println(sizeof(int)); //Uno reports this as 2
+  int myValue5 = -2450;
+  unsigned int myValue6 = 4001;
+  randomLocation = random(0, myMem.length() - (sizeof(int) * 2));
 
   startTime = micros();
   myMem.put(randomLocation, myValue5);
   endTime = micros();
-  Serial.println("Time to record int32: " + (String)(endTime - startTime) + " us");
-  myMem.put(randomLocation + 4, myValue6);
+  Serial.print("Time to record int: ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
+  myMem.put(randomLocation + sizeof(int), myValue6);
 
   int response5;
   unsigned int response6;
@@ -155,25 +217,41 @@ void setup()
   startTime = micros();
   myMem.get(randomLocation, response5);
   endTime = micros();
-  Serial.println("Time to read int32: " + (String)(endTime - startTime) + " us");
+  Serial.print("Time to read int: ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
 
-  myMem.get(randomLocation + 4, response6);
-  Serial.println("Location " + (String)randomLocation + " should be " + (String)myValue5 + ": " + (String)response5);
-  Serial.println("Location " + (String)(randomLocation + 4) + " should be " + (String)myValue6 + ": " + (String)response6);
+  myMem.get(randomLocation + sizeof(int), response6);
+  Serial.print("Location ");
+  Serial.print(randomLocation);
+  Serial.print(" should be ");
+  Serial.print(myValue5);
+  Serial.print(": ");
+  Serial.println(response5);
+
+  Serial.print("Location ");
+  Serial.print(randomLocation + sizeof(int));
+  Serial.print(" should be ");
+  Serial.print(myValue6);
+  Serial.print(": ");
+  Serial.println(response6);
   if (myValue5 != response5)
     allTestsPassed = false;
   if (myValue6 != response6)
     allTestsPassed = false;
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+  Serial.println("");
+  Serial.println("32 bit tests");
+
   //int32_t and uint32_t sequential test
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   int32_t myValue7 = -341002;
   uint32_t myValue8 = 241544;
-  randomLocation = random(0, myMem.length());
+  randomLocation = random(0, myMem.length() - (sizeof(int32_t) * 2));
 
   myMem.put(randomLocation, myValue7);
-  myMem.put(randomLocation + 4, myValue8);
+  myMem.put(randomLocation + sizeof(int32_t), myValue8);
 
   int32_t response7;
   uint32_t response8;
@@ -181,11 +259,24 @@ void setup()
   startTime = micros();
   myMem.get(randomLocation, response7);
   endTime = micros();
-  Serial.println("Time to read int32: " + (String)(endTime - startTime) + " us");
+  Serial.print("Time to read int32: ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
 
-  myMem.get(randomLocation + 4, response8);
-  Serial.println("Location " + (String)randomLocation + " should be " + (String)myValue7 + ": " + (String)response7);
-  Serial.println("Location " + (String)(randomLocation + 4) + " should be " + (String)myValue8 + ": " + (String)response8);
+  myMem.get(randomLocation + sizeof(int32_t), response8);
+  Serial.print("Location ");
+  Serial.print(randomLocation);
+  Serial.print(" should be ");
+  Serial.print(myValue7);
+  Serial.print(": ");
+  Serial.println(response7);
+
+  Serial.print("Location ");
+  Serial.print(randomLocation + sizeof(int32_t));
+  Serial.print(" should be ");
+  Serial.print(myValue8);
+  Serial.print(": ");
+  Serial.println(response8);
   if (myValue7 != response7)
     allTestsPassed = false;
   if (myValue8 != response8)
@@ -194,13 +285,14 @@ void setup()
 
   //float (32) sequential test
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  Serial.println("Size of float: " + (String)sizeof(float));
+  Serial.print("Size of float: ");
+  Serial.println(sizeof(float));
   float myValue9 = -7.35;
   float myValue10 = 5.22;
-  randomLocation = random(0, myMem.length());
+  randomLocation = random(0, myMem.length() - (sizeof(float) * 2) );
 
   myMem.put(randomLocation, myValue9);
-  myMem.put(randomLocation + 4, myValue10);
+  myMem.put(randomLocation + sizeof(float), myValue10);
 
   float response9;
   float response10;
@@ -208,11 +300,25 @@ void setup()
   startTime = micros();
   myMem.get(randomLocation, response9);
   endTime = micros();
-  Serial.println("Time to read float: " + (String)(endTime - startTime) + " us");
+  Serial.print("Time to read float: ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
 
-  myMem.get(randomLocation + 4, response10);
-  Serial.println("Location " + (String)randomLocation + " should be " + (String)myValue9 + ": " + (String)response9);
-  Serial.println("Location " + (String)(randomLocation + 4) + " should be " + (String)myValue10 + ": " + (String)response10);
+  myMem.get(randomLocation + sizeof(float), response10);
+  Serial.print("Location ");
+  Serial.print(randomLocation);
+  Serial.print(" should be ");
+  Serial.print(myValue9);
+  Serial.print(": ");
+  Serial.println(response9);
+
+  Serial.print("Location ");
+  Serial.print(randomLocation + sizeof(float));
+  Serial.print(" should be ");
+  Serial.print(myValue10);
+  Serial.print(": ");
+  Serial.println(response10);
+
   if (myValue9 != response9)
     allTestsPassed = false;
   if (myValue10 != response10)
@@ -224,20 +330,23 @@ void setup()
 
   //double (64) sequential test
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  Serial.println("Size of double: " + (String)sizeof(double));
+  Serial.print("Size of double: ");
+  Serial.println(sizeof(double));
   double myValue11 = -290.3485723409857;
   double myValue12 = 384.957; //34987;
   double myValue13 = 917.14159;
   double myValue14 = 254.8877;
-  randomLocation = random(0, myMem.length());
+  randomLocation = random(0, myMem.length() - (sizeof(double) * 2));
 
   startTime = micros();
   myMem.put(randomLocation, myValue11);
   endTime = micros();
-  Serial.println("Time to record 64-bits: " + (String)(endTime - startTime) + " us");
+  Serial.print("Time to record 64-bits: ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
 
-  myMem.put(randomLocation + 8, myValue12);
-  myMem.put(myMem.length() - sizeof(myValue13), myValue13); //Test end of EEPROM space
+  myMem.put(randomLocation + sizeof(double), myValue12);
+  myMem.put(myMem.length() - sizeof(double), myValue13); //Test end of EEPROM space
 
   double response11;
   double response12;
@@ -246,20 +355,43 @@ void setup()
   startTime = micros();
   myMem.get(randomLocation, response11);
   endTime = micros();
-  Serial.println("Time to read 64-bits: " + (String)(endTime - startTime) + " us");
+  Serial.print("Time to read 64-bits: ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
 
-  myMem.get(randomLocation + 8, response12);
-  myMem.get(myMem.length() - sizeof(myValue13), response13);
-  Serial.println("Location " + (String)randomLocation + " should be " + (String)myValue11 + ": " + (String)response11);
-  Serial.println("Location " + (String)(randomLocation + 8) + " should be " + (String)myValue12 + ": " + (String)response12);
-  Serial.println("Edge of EEPROM " + (String)(myMem.length() - sizeof(myValue13)) + " should be " + (String)myValue13 + ": " + (String)response13);
+  myMem.get(randomLocation + sizeof(double), response12);
+  myMem.get(myMem.length() - sizeof(double), response13);
+  Serial.print("Location ");
+  Serial.print(randomLocation);
+  Serial.print(" should be ");
+  Serial.print(myValue11);
+  Serial.print(": ");
+  Serial.println(response11);
+
+  Serial.print("Location ");
+  Serial.print(randomLocation + sizeof(double));
+  Serial.print(" should be ");
+  Serial.print(myValue12);
+  Serial.print(": ");
+  Serial.println(response12);
+
+  Serial.print("Edge of EEPROM ");
+  Serial.print(myMem.length() - sizeof(double));
+  Serial.print(" should be ");
+  Serial.print(myValue13);
+  Serial.print(": ");
+  Serial.println(response13);
 
   double response14;
-  myMem.put(myMem.length() - sizeof(myValue14), myValue14); //Test the re-write of a spot
-  myMem.get(myMem.length() - sizeof(myValue14), response14);
+  myMem.put(myMem.length() - sizeof(double), myValue14); //Test the re-write of a spot
+  myMem.get(myMem.length() - sizeof(double), response14);
   Serial.print("Rewrite of ");
-  Serial.print(myMem.length() - sizeof(myValue14));
-  Serial.println(" should be " + (String)myValue14 + ": " + (String)response14);
+  Serial.print(myMem.length() - sizeof(double));
+  Serial.print(" should be ");
+  Serial.print(myValue14);
+  Serial.print(": ");
+  Serial.println(response14);
+
   if (myValue11 != response11)
     allTestsPassed = false;
   if (myValue12 != response12)
@@ -277,32 +409,41 @@ void setup()
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   //char myChars[242] = "Lorem ipsum dolor sit amet, has in verterem accusamus. Nulla viderer inciderint eum at. Quo elit nullam malorum te, agam fuisset detracto an sea, eam ut liber aperiri. Id qui velit facilisi. Mel probatus definitionem id, eu amet vidisse eum.";
   char myChars[88] = "Lorem ipsum dolor sit amet, has in verterem accusamus. Nulla viderer inciderint eum at.";
-  randomLocation = random(0, myMem.length());
+  randomLocation = random(0, myMem.length() - sizeof(myChars));
 
-  Serial.print("Calculated time to record array of " + (String)sizeof(myChars) + " characters: ~");
-  Serial.print((uint32_t)sizeof(myChars) / myMem.getPageSizeBytes() * myMem.getPageWriteTimeMs());
+  Serial.print("Calculated time to record array of ");
+  Serial.print(sizeof(myChars));
+  Serial.print(" characters: ~");
+  Serial.print((uint32_t)sizeof(myChars) / myMem.getPageSizeBytes() * myMem.getWriteTimeMs());
   Serial.println("ms");
 
   startTime = micros();
   myMem.put(randomLocation, myChars);
   endTime = micros();
-  Serial.println("Time to record array: " + (String)(endTime - startTime) + " us");
+  Serial.print("Time to record array: ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
 
   char readMy[sizeof(myChars)];
 
   startTime = micros();
   myMem.get(randomLocation, readMy);
   endTime = micros();
-  Serial.println("Time to read array: " + (String)(endTime - startTime) + " us");
+  Serial.print("Time to read array: ");
+  Serial.print(endTime - startTime);
+  Serial.println(" us");
 
-  Serial.println("Location " + (String)randomLocation + " string should read:");
-  Serial.println(myChars);
-  Serial.println(readMy);
+  //  Serial.print("Location ");
+  //  Serial.print(randomLocation);
+  //  Serial.print(" string should read:");
+  //  Serial.println(myChars);
+  //  Serial.println(readMy);
   if (strcmp(myChars, readMy) != 0)
   {
     Serial.println("String compare failed");
     allTestsPassed = false;
   }
+
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   Serial.println();
