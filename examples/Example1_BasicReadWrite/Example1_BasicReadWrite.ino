@@ -39,31 +39,15 @@ void setup()
   }
   Serial.println("Memory detected!");
 
-  uint32_t eepromSizeBytes = myMem.getMemorySizeBytes();
-  Serial.print("Detected EEPROM size (bytes): ");
-  Serial.print(eepromSizeBytes);
-  Serial.print(" - EEPROM Type: 24XX");
-  if (eepromSizeBytes == 16)
-    Serial.print("00");
-  else
-  {
-    if ((eepromSizeBytes * 8 / 1024) < 10) Serial.print("0");
-    Serial.print(eepromSizeBytes * 8 / 1024);
-  }
-  Serial.println();
-
-  Serial.print("Detected number of address bytes: ");
-  Serial.println(myMem.getAddressBytes());
-
-  Serial.print("Detected pageSizeBytes: ");
-  Serial.println(myMem.getPageSizeBytes());
+  Serial.print("Mem size in bytes: ");
+  Serial.println(myMem.length());
 
   //Yes you can read and write bytes, but you shouldn't!
   byte myValue1 = 200;
   myMem.write(0, myValue1); //(location, data)
 
   byte myRead1 = myMem.read(0);
-  Serial.print("I read (should be 200): ");
+  Serial.print("I read: ");
   Serial.println(myRead1);
 
   //You should use gets and puts. This will automatically and correctly arrange
@@ -72,14 +56,14 @@ void setup()
   myMem.put(10, myValue2); //(location, data)
   int myRead2;
   myMem.get(10, myRead2); //location to read, thing to put data into
-  Serial.print("I read (should be -366): ");
+  Serial.print("I read: ");
   Serial.println(myRead2);
 
   float myValue3 = -7.35;
   myMem.put(20, myValue3); //(location, data)
   float myRead3;
   myMem.get(20, myRead3); //location to read, thing to put data into
-  Serial.print("I read (should be -7.35): ");
+  Serial.print("I read: ");
   Serial.println(myRead3);
 
   String myString = "Hi, I am just a simple test string";

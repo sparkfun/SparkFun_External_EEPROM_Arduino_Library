@@ -12,36 +12,19 @@ ExternalEEPROM	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
-read	KEYWORD2
-write	KEYWORD2
 begin	KEYWORD2
 isConnected	KEYWORD2
 isBusy	KEYWORD2
+read	KEYWORD2
+write	KEYWORD2
 erase	KEYWORD2
-
-detectMemorySizeBytes	KEYWORD2
-setMemorySizeBytes	KEYWORD2
-getMemorySizeBytes	KEYWORD2
 setMemorySize	KEYWORD2
 getMemorySize	KEYWORD2
 length	KEYWORD2
-
-detectPageSizeBytes	KEYWORD2
-setPageSizeBytes	KEYWORD2
-getPageSizeBytes	KEYWORD2
 setPageSize	KEYWORD2
 getPageSize	KEYWORD2
-
-detectAddressBytes	KEYWORD2
-setAddressBytes	KEYWORD2
-getAddressBytes	KEYWORD2
-
-detectWriteTimeMs	KEYWORD2
-setWriteTimeMs	KEYWORD2
-getWriteTimeMs	KEYWORD2
 setPageWriteTime	KEYWORD2
 getPageWriteTime	KEYWORD2
-
 enablePollForWriteComplete	KEYWORD2
 disablePollForWriteComplete	KEYWORD2
 get	KEYWORD2
@@ -50,7 +33,6 @@ setI2CBufferSize	KEYWORD2
 getI2CBufferSize	KEYWORD2
 putString	KEYWORD2
 getString	KEYWORD2
-detectMemorySizeBytes	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
