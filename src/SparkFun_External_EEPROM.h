@@ -108,17 +108,18 @@ struct struct_memorySettings
     uint8_t deviceAddress;
     uint32_t memorySize_bytes;
     uint16_t pageSize_bytes;
-    uint8_t pageWriteTime_ms;
+    uint8_t writeTime_ms;
     bool pollForWriteComplete;
+    uint8_t addressSize_bytes;
 };
 
 class ExternalEEPROM
 {
   public:
     uint8_t read(uint32_t eepromLocation);
-    void read(uint32_t eepromLocation, uint8_t *buff, uint16_t bufferSize);
-    void write(uint32_t eepromLocation, uint8_t dataToWrite);
-    void write(uint32_t eepromLocation, const uint8_t *dataToWrite, uint16_t blockSize);
+    int read(uint32_t eepromLocation, uint8_t *buff, uint16_t bufferSize);
+    int write(uint32_t eepromLocation, uint8_t dataToWrite);
+    int write(uint32_t eepromLocation, const uint8_t *dataToWrite, uint16_t blockSize);
 
     bool begin(uint8_t deviceAddress = 0b1010000, TwoWire &wirePort = Wire); // By default use the Wire port
     bool isConnected(uint8_t i2cAddress = 255);
@@ -126,24 +127,29 @@ class ExternalEEPROM
     void erase(uint8_t toWrite = 0x00); // Erase the entire memory. Optional: write a given byte to each spot.
 
     // void settings(struct_memorySettings newSettings); //Set all the settings using the settings struct
+
+    uint32_t detectMemorySizeBytes();          // Attempts to detect the size of the EEPROM
     void setMemorySizeBytes(uint32_t memSize); // Set the size of memory in bytes
     uint32_t getMemorySizeBytes();             // Return size of EEPROM
     void setMemorySize(uint32_t memSize);      // Depricated
     uint32_t getMemorySize();                  // Depricated
+    uint32_t length();                         // Return size of EEPROM in bytes
 
-    uint32_t detectMemorySizeBytes(); // Attempts to detect the size of the EEPROM
+    uint8_t detectAddressBytes(); // Determine the number of address bytes, 1 or 2
+    void setAddressBytes(uint8_t addressBytes);
+    uint8_t getAddressBytes();
 
-    uint32_t length(); // Return size of EEPROM in bytes
-
+    uint16_t detectPageSizeBytes();           // Returns the number of bytes successfully written in one page
     void setPageSizeBytes(uint16_t pageSize); // Set the size of the page we can write at a time
     uint16_t getPageSizeBytes();
-    void setPageSize(uint16_t pageSize);      // Depricated
-    uint16_t getPageSize();                   // Depricated
+    void setPageSize(uint16_t pageSize); // Depricated
+    uint16_t getPageSize();              // Depricated
 
-    void setPageWriteTimeMs(uint8_t writeTimeMS); // Set the number of ms required per page write
-    uint8_t getPageWriteTimeMs();
-    void setPageWriteTime(uint8_t writeTimeMS);   // Depricated
-    uint8_t getPageWriteTime();                   // Depricated
+    uint8_t detectWriteTimeMs(uint8_t numberOfTests = 8);
+    void setWriteTimeMs(uint8_t writeTimeMS); // Set the number of ms required per page write
+    uint8_t getWriteTimeMs();
+    void setPageWriteTime(uint8_t writeTimeMS); // Depricated
+    uint8_t getPageWriteTime();                 // Depricated
 
     void enablePollForWriteComplete(); // Most EEPROMs all I2C polling of when a write has completed
     void disablePollForWriteComplete();
@@ -175,8 +181,10 @@ class ExternalEEPROM
             0b1010000, // 0x50; format is 0b1010 + (A2 A1 A0) or 0b1010 + (B0 A1 A0) for larger (>512kbit) EEPROMs
         .memorySize_bytes = (uint32_t)512 * 1024 / 8, // 65,536 bytes = 512-Kbit EEPROM
         .pageSize_bytes = 64,
-        .pageWriteTime_ms = 5,
-        .pollForWriteComplete = true};
+        .writeTime_ms = 5, //All EEPROMs seem to have a max write time of 5ms
+        .pollForWriteComplete = true,
+        .addressSize_bytes = 0,
+    };
 };
 
 #endif //_SPARKFUN_EXTERNAL_EEPROM_H
