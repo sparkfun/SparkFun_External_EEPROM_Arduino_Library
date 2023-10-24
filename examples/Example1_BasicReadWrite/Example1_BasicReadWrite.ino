@@ -56,9 +56,14 @@ void setup()
   //myMem.setMemorySizeBytes(2048);
 
   // 24xx02 - 2048 bit / 256 bytes - 1 address byte, 8 byte page
-  myMem.setAddressBytes(1);
-  myMem.setPageSizeBytes(8);
-  myMem.setMemorySizeBytes(256);
+  //myMem.setAddressBytes(1);
+  //myMem.setPageSizeBytes(8);
+  //myMem.setMemorySizeBytes(256);
+
+  // 24xx512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page
+  myMem.setAddressBytes(2);
+  myMem.setPageSizeBytes(128);
+  myMem.setMemorySizeBytes(65536);
 
   if (myMem.begin() == false)
   {
