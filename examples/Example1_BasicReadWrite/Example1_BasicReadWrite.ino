@@ -3,7 +3,7 @@
   By: Nathan Seidle
   SparkFun Electronics
   Date: December 11th, 2019
-  License: This code is public domain but you buy me a beer if you use this 
+  License: This code is public domain but you buy me a beer if you use this
   and we meet someday (Beerware license).
   Feel like supporting our work? Buy a board from SparkFun!
   https://www.sparkfun.com/products/14764
@@ -30,6 +30,35 @@ void setup()
   Serial.println("Qwiic EEPROM example");
 
   Wire.begin();
+
+  // 24xx00 - 128 bit / 16 bytes - 1 address byte, 1 byte page
+  // 24xx01 - 1024 bit / 128 bytes - 1 address byte, 8 byte page
+  // 24xx02 - 2048 bit / 256 bytes - 1 address byte, 8 byte page
+  // 24xx04 - 4096 bit / 512 bytes - 1 address byte, 16 byte page
+  // 24xx08 - 8192 bit / 1024 bytes - 1 address byte, 16 byte page
+  // 24xx16 - 16384 bit / 2048 bytes - 1 address byte, 16 byte page
+  // 24xx32 - 32768 bit / 4096 bytes - 2 address bytes, 32 byte page
+  // 24xx64 - 65536 bit / 8192 bytes - 2 address bytes, 32 byte page
+  // 24xx128 - 131072 bit / 16384 bytes - 2 address bytes, 64 byte page
+  // 24xx256 - 262144 bit / 32768 bytes - 2 address bytes, 64 byte page
+  // 24xx512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page
+  // 24xx1024 - 1024000 bit / 128000 byte - 2 address byte, 128 byte page
+  // 24xxM02 - 2097152 bit / 262144 byte - 2 address bytes, 256 byte page
+
+  // 24xx16 - 16384 bit / 2048 bytes - 1 address byte, 16 byte page size
+  //myMem.setAddressBytes(1);
+  //myMem.setPageSizeBytes(16);
+  //myMem.setMemorySizeBytes(2048);
+
+  // 24xx04 - 4096 bit / 512 bytes - 1 address byte, 16 byte page
+  //myMem.setAddressBytes(1);
+  //myMem.setPageSizeBytes(16);
+  //myMem.setMemorySizeBytes(2048);
+
+  // 24xx02 - 2048 bit / 256 bytes - 1 address byte, 8 byte page
+  myMem.setAddressBytes(1);
+  myMem.setPageSizeBytes(8);
+  myMem.setMemorySizeBytes(256);
 
   if (myMem.begin() == false)
   {
@@ -89,7 +118,7 @@ void setup()
   Serial.print("I read: ");
   Serial.println(myRead4);
   Serial.print("Next available EEPROM location: ");
-  Serial.println(nextEEPROMLocation);  
+  Serial.println(nextEEPROMLocation);
 }
 
 void loop()
