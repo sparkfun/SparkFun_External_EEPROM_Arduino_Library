@@ -11,6 +11,8 @@ Various external EEPROMs have various interface specs (overall size, page size, 
 
 Best used with the Qwiic EEPROM: https://www.sparkfun.com/products/14764
 
+For a list of all the EEPROM datasheets, please see [this repo](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library_Docs). We don't want to store the PDFs in the library repo, otherwise every user will have to download all the PDFs just to install the library.
+
 This library can be installed via the Arduino Library manager. Search for **SparkFun External EEPROM**.
 
 Want to help? Please do! We are always looking for ways to improve and build out features of this library.
