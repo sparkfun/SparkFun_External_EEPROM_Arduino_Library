@@ -9,19 +9,19 @@
   the start up delay caused by the detection routines.
 
   Known/compatible memory types (basically all I2C EEPROMs):
-    24XX00 - 128 bit / 16 bytes - 1 address byte, 1 byte page size
-    24XX01 - 1024 bit / 128 bytes - 1 address byte, 8 byte page size
-    24XX02 - 2048 bit / 256 bytes - 1 address byte, 8 byte page size
-    24XX04 - 4096 bit / 512 bytes - 1 address byte, 16 byte page size
-    24XX08 - 8192 bit / 1024 bytes - 1 address byte, 16 byte page size
-    24XX16 - 16384 bit / 2048 bytes - 1 address byte, 16 byte page size
-    24XX32 - 32768 bit / 4096 bytes - 2 address bytes, 32 byte page size
-    24XX64 - 65536 bit / 8192 bytes - 2 address bytes, 32 byte page size
-    24XX128 - 131072 bit / 16384 bytes - 2 address bytes, 64 byte page size
-    24XX256 - 262144 bit / 32768 bytes - 2 address bytes, 64 byte page size
-    24XX512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page size
-    24XX1024 - 1024000 bit / 128000 byte - 2 address bytes, 128 byte page size
-    24XXM02 - 2097152 bit / 262144 byte - 2 address bytes, 256 byte page size
+    24xx00 - 128 bit / 16 bytes - 1 address byte, 1 byte page size
+    24xx01 - 1024 bit / 128 bytes - 1 address byte, 8 byte page size
+    24xx02 - 2048 bit / 256 bytes - 1 address byte, 8 byte page size
+    24xx04 - 4096 bit / 512 bytes - 1 address byte, 16 byte page size
+    24xx08 - 8192 bit / 1024 bytes - 1 address byte, 16 byte page size
+    24xx16 - 16384 bit / 2048 bytes - 1 address byte, 16 byte page size
+    24xx32 - 32768 bit / 4096 bytes - 2 address bytes, 32 byte page size
+    24xx64 - 65536 bit / 8192 bytes - 2 address bytes, 32 byte page size
+    24xx128 - 131072 bit / 16384 bytes - 2 address bytes, 64 byte page size
+    24xx256 - 262144 bit / 32768 bytes - 2 address bytes, 64 byte page size
+    24xx512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page size
+    24xx1024 - 1024000 bit / 128000 byte - 2 address bytes, 128 byte page size
+    24xxM02 - 2097152 bit / 262144 byte - 2 address bytes, 256 byte page size
 */
 
 #include <Wire.h>
