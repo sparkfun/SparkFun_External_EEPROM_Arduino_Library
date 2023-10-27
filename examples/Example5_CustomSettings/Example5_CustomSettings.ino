@@ -38,9 +38,9 @@ void setup()
 
   //Explicitly set the address bytes, page size, and memory size for this EEPROM
   // 24xx512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page
-  myMem.setAddressBytes(2);
+  myMem.setMemorySizeBytes(65536); //This function will set the AddressBytes and PageSize.
+  myMem.setAddressBytes(2); //Call these functions after MemorySizeBytes. Only needed if you have a very unique EEPROM with odd Address Bytes and Page Sizes.
   myMem.setPageSizeBytes(128);
-  myMem.setMemorySizeBytes(65536);
 
   if (myMem.begin() == false)
   {
