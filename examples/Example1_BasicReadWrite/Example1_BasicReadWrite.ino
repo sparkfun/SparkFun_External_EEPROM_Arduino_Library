@@ -45,14 +45,14 @@ void setup()
   // 24xx128 - 131072 bit / 16384 bytes - 2 address bytes, 64 byte page
   // 24xx256 - 262144 bit / 32768 bytes - 2 address bytes, 64 byte page
   // 24xx512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page
-  // 24xx1024 - 1024000 bit / 128000 byte - 2 address byte, 128 byte page
+  // 24xx1025 - 1024000 bit / 128000 byte - 2 address byte, 128 byte page
   // 24xxM02 - 2097152 bit / 262144 byte - 2 address bytes, 256 byte page
 
-  // Valid types: 24xx00, 01, 02, 04, 08, 16, 32, 64, 128, 256, 512, 1024, 2048
+  // Valid types: 24xx00, 01, 02, 04, 08, 16, 32, 64, 128, 256, 512, 1025, 2048
   // myMem.setMemoryType(16); 
 
   // Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/14764
-  myMem.setMemoryType(512); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048
+  myMem.setMemoryType(512); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1025, 2048
 
   if (myMem.begin() == false)
   {

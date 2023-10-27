@@ -5,8 +5,7 @@
   License: Lemonadeware. Buy me a lemonade (or other) someday.
 
   This sketch demonstrates how to detect memory size, address bytes,
-  page size, and write time. You can also pre-assign these specs to avoid
-  the start up delay caused by the detection routines.
+  page size, and write time.
 
   Known/compatible memory types (basically all I2C EEPROMs):
    24xx00 - 128 bit / 16 bytes - 1 address byte, 1 byte page size
@@ -20,7 +19,7 @@
    24xx128 - 131072 bit / 16384 bytes - 2 address bytes, 64 byte page size
    24xx256 - 262144 bit / 32768 bytes - 2 address bytes, 64 byte page size
    24xx512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page size
-   24xx1024 - 1024000 bit / 128000 byte - 2 address bytes, 128 byte page size
+   24xx1025 - 1024000 bit / 128000 byte - 2 address bytes, 128 byte page size
    24xxM02 - 2097152 bit / 262144 byte - 2 address bytes, 256 byte page size
 */
 

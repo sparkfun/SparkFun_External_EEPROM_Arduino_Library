@@ -20,7 +20,7 @@
     24xx128 - 131072 bit / 16384 bytes - 2 address bytes, 64 byte page size
     24xx256 - 262144 bit / 32768 bytes - 2 address bytes, 64 byte page size
     24xx512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page size
-    24xx1024 - 1024000 bit / 128000 byte - 2 address bytes, 128 byte page size
+    24xx1025 - 1024000 bit / 128000 byte - 2 address bytes, 128 byte page size
     24xxM02 - 2097152 bit / 262144 byte - 2 address bytes, 256 byte page size
 */
 

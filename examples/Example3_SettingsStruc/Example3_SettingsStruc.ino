@@ -50,6 +50,9 @@ void setup()
 
   Wire.begin();
 
+  // Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/14764
+  myMem.setMemoryType(512); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1025, 2048
+
   if (myMem.begin() == false)
   {
     Serial.println(F("No memory detected. Freezing."));

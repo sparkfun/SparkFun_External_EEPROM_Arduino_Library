@@ -42,8 +42,11 @@ void setup()
 //  Wire1.setClock(400000); //set I2C communication to 400kHz
   Wire1.begin();
 
+  // Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/14764
+  myMem.setMemoryType(512); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1025, 2048
+
   #define EEPROM_ADDRESS 0b1010001 //0b1010(A2 A1 A0): A standard I2C EEPROM with the ADR0 bit set to VCC
-    
+
   //Connect to a EEPROM with ADR0 set to VCC and use the Wire1 hardware to talk to the EEPROM
   if (myMem.begin(EEPROM_ADDRESS, Wire1) == false) //And Uno will fail to compile here
   {

@@ -71,9 +71,7 @@ void setup()
   beginSD();
 
   //Set settings for a 24LC1025
-  myMem.setMemorySizeBytes(1024 * 1024 / 8); //In bytes. 1024 Kbit = 128 KB
-  myMem.setPageSizeBytes(128);           //In bytes.
-  myMem.enablePollForWriteComplete();
+  myMem.setMemoryType(1025); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1025, 2048
 }
 
 void loop()

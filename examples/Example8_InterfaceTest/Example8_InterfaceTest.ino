@@ -41,8 +41,7 @@ void setup()
   //Wire.setClock(1000000);
 
   //Set the memory specs
-  //Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/14764
-  myMem.setMemoryType(512); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048
+  myMem.setMemoryType(2); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1025, 2048
 
   if (myMem.begin() == false)
   {
@@ -124,8 +123,7 @@ void setup()
   Serial.print(myValue1);
   Serial.print(": ");
   Serial.print(response1);
-  if(myValue1 != response1)
-    Serial.print(" - Fail");
+  if(myValue1 == response1 ? Serial.print(" - Success") : Serial.print(" - Fail"));
   Serial.println();
 
   Serial.print("Location ");
@@ -134,8 +132,7 @@ void setup()
   Serial.print(myValue2);
   Serial.print(": ");
   Serial.print(response2);
-  if(myValue2 != response2)
-    Serial.print(" - Fail");
+  if(myValue2 == response2 ? Serial.print(" - Success") : Serial.print(" - Fail"));
   Serial.println();
 
   if (myValue1 != response1)
@@ -178,14 +175,18 @@ void setup()
   Serial.print(" should be ");
   Serial.print(myValue3);
   Serial.print(": ");
-  Serial.println(response3);
+  Serial.print(response3);
+  if(myValue3 == response3 ? Serial.print(" - Success") : Serial.print(" - Fail"));
+  Serial.println();
 
   Serial.print("Location ");
   Serial.print(randomLocation + sizeof(int16_t));
   Serial.print(" should be ");
   Serial.print(myValue4);
   Serial.print(": ");
-  Serial.println(response4);
+  Serial.print(response4);
+  if(myValue4 == response4 ? Serial.print(" - Success") : Serial.print(" - Fail"));
+  Serial.println();
 
   if (myValue3 != response3)
     allTestsPassed = false;
@@ -228,14 +229,19 @@ void setup()
   Serial.print(" should be ");
   Serial.print(myValue5);
   Serial.print(": ");
-  Serial.println(response5);
+  Serial.print(response5);
+  if(myValue5 == response5 ? Serial.print(" - Success") : Serial.print(" - Fail"));
+  Serial.println();
 
   Serial.print("Location ");
   Serial.print(randomLocation + sizeof(int));
   Serial.print(" should be ");
   Serial.print(myValue6);
   Serial.print(": ");
-  Serial.println(response6);
+  Serial.print(response6);
+  if(myValue6 == response6 ? Serial.print(" - Success") : Serial.print(" - Fail"));
+  Serial.println();
+  
   if (myValue5 != response5)
     allTestsPassed = false;
   if (myValue6 != response6)
@@ -270,14 +276,19 @@ void setup()
   Serial.print(" should be ");
   Serial.print(myValue7);
   Serial.print(": ");
-  Serial.println(response7);
+  Serial.print(response7);
+  if(myValue7 == response7 ? Serial.print(" - Success") : Serial.print(" - Fail"));
+  Serial.println();
 
   Serial.print("Location ");
   Serial.print(randomLocation + sizeof(int32_t));
   Serial.print(" should be ");
   Serial.print(myValue8);
   Serial.print(": ");
-  Serial.println(response8);
+  Serial.print(response8);
+  if(myValue8 == response8 ? Serial.print(" - Success") : Serial.print(" - Fail"));
+  Serial.println();
+  
   if (myValue7 != response7)
     allTestsPassed = false;
   if (myValue8 != response8)
@@ -311,14 +322,18 @@ void setup()
   Serial.print(" should be ");
   Serial.print(myValue9);
   Serial.print(": ");
-  Serial.println(response9);
+  Serial.print(response9);
+  if(myValue9 == response9 ? Serial.print(" - Success") : Serial.print(" - Fail"));
+  Serial.println();
 
   Serial.print("Location ");
   Serial.print(randomLocation + sizeof(float));
   Serial.print(" should be ");
   Serial.print(myValue10);
   Serial.print(": ");
-  Serial.println(response10);
+  Serial.print(response10);
+  if(myValue10 == response10 ? Serial.print(" - Success") : Serial.print(" - Fail"));
+  Serial.println();
 
   if (myValue9 != response9)
     allTestsPassed = false;
@@ -367,21 +382,27 @@ void setup()
   Serial.print(" should be ");
   Serial.print(myValue11);
   Serial.print(": ");
-  Serial.println(response11);
+  Serial.print(response11);
+  if(myValue11 == response11 ? Serial.print(" - Success") : Serial.print(" - Fail"));
+  Serial.println();
 
   Serial.print("Location ");
   Serial.print(randomLocation + sizeof(double));
   Serial.print(" should be ");
   Serial.print(myValue12);
   Serial.print(": ");
-  Serial.println(response12);
+  Serial.print(response12);
+  if(myValue12 == response12 ? Serial.print(" - Success") : Serial.print(" - Fail"));
+  Serial.println();
 
   Serial.print("Edge of EEPROM ");
   Serial.print(myMem.length() - sizeof(double));
   Serial.print(" should be ");
   Serial.print(myValue13);
   Serial.print(": ");
-  Serial.println(response13);
+  Serial.print(response13);
+  if(myValue13 == response13 ? Serial.print(" - Success") : Serial.print(" - Fail"));
+  Serial.println();
 
   double response14;
   myMem.put(myMem.length() - sizeof(double), myValue14); //Test the re-write of a spot
@@ -391,7 +412,9 @@ void setup()
   Serial.print(" should be ");
   Serial.print(myValue14);
   Serial.print(": ");
-  Serial.println(response14);
+  Serial.print(response14);
+  if(myValue14 == response14 ? Serial.print(" - Success") : Serial.print(" - Fail"));
+  Serial.println();
 
   if (myValue11 != response11)
     allTestsPassed = false;
