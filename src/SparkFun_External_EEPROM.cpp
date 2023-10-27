@@ -232,7 +232,7 @@ void ExternalEEPROM::setMemoryType(uint16_t typeNumber)
     case (512):
         setMemorySizeBytes(128 * typeNumber); //65536
         break;
-    case (1024):
+    case (1025):
         setMemorySizeBytes(128000); //128000
         break;
     case (2048):
