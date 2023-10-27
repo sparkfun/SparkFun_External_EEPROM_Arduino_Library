@@ -40,12 +40,9 @@ void setup()
   Wire.setClock(400000);
   //Wire.setClock(1000000);
 
-  //The memory specs can be set before begin() to skip the auto-detection delay and write wear
-  //24XX04 - 4096 bit / 512 bytes - 1 address byte, 16 byte page size
-  myMem.setAddressBytes(1);
-  myMem.setPageSizeBytes(16);
-  myMem.setMemorySizeBytes(512);
-
+  //Set the memory specs
+  //Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/14764
+  myMem.setMemoryType(512); // Valid types: 24xx00, 01, 02, 04, 08, 16, 32, 64, 128, 256, 512, 1024, 2048
 
   if (myMem.begin() == false)
   {
@@ -56,7 +53,7 @@ void setup()
   Serial.println("Memory detected!");
 
   uint32_t eepromSizeBytes = myMem.getMemorySizeBytes();
-  Serial.print("Detected EEPROM type: 24XX");
+  Serial.print("EEPROM type: 24xx");
   if (eepromSizeBytes == 16)
     Serial.print("00");
   else
@@ -68,28 +65,27 @@ void setup()
   Serial.print(eepromSizeBytes);
   Serial.println();
 
-  //  Serial.print("Detected number of address bytes: ");
-  //  Serial.println(myMem.getAddressBytes());
-  //
-  //  Serial.print("Detected pageSizeBytes: ");
-  //  Serial.println(myMem.getPageSizeBytes());
-  //
-
+  Serial.print("Number of address bytes: ");
+  Serial.println(myMem.getAddressBytes());
+  
+  Serial.print("Page size in bytes: ");
+  Serial.println(myMem.getPageSizeBytes());
+  
   bool allTestsPassed = true;
 
   //Erase test
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  Serial.print("Time to erase all EEPROM: ");
   long startTime = millis();
   myMem.erase();
   long endTime = millis();
-  Serial.print("Time to erase all EEPROM: ");
   Serial.print(endTime - startTime);
   Serial.println("ms");
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   //Byte sequential test
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  Serial.println("");
+  Serial.println();
   Serial.println("8 bit tests");
   byte myValue1 = 200;
   byte myValue2 = 23;
@@ -121,22 +117,27 @@ void setup()
   Serial.print(endTime - startTime);
   Serial.println(" us");
 
-while(1);
-
   byte response2 = myMem.read(randomLocation + sizeof(byte));
   Serial.print("Location ");
   Serial.print(randomLocation);
   Serial.print(" should be ");
   Serial.print(myValue1);
   Serial.print(": ");
-  Serial.println(response1);
+  Serial.print(response1);
+  if(myValue1 != response1)
+    Serial.print(" - Fail");
+  Serial.println();
 
   Serial.print("Location ");
   Serial.print(randomLocation + sizeof(byte));
   Serial.print(" should be ");
   Serial.print(myValue2);
   Serial.print(": ");
-  Serial.println(response2);
+  Serial.print(response2);
+  if(myValue2 != response2)
+    Serial.print(" - Fail");
+  Serial.println();
+
   if (myValue1 != response1)
     allTestsPassed = false;
   if (myValue2 != response2)

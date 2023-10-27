@@ -38,23 +38,6 @@ void setup()
 
   //randomSeed(analogRead(A0) * analogRead(A1));
 
-  //The memory specs can be set before begin() to skip the auto-detection delay and write wear
-  //24XX02 - 2048 bit / 256 bytes - 1 address byte, 8 byte page size
-  //myMem.setAddressBytes(1);
-  //myMem.setPageSizeBytes(8);
-  //myMem.setMemorySizeBytes(256);
-
-  //24XX16 - 16384 bit / 2048 bytes - 1 address byte, 16 byte page size
-  //myMem.setAddressBytes(1);
-  //myMem.setPageSizeBytes(16);
-  //myMem.setMemorySizeBytes(2048);
-
-  //24XX32 - 32768 bit / 4096 bytes - 2 address byte, 32 byte page size
-  //myMem.setAddressBytes(2);
-  //myMem.setPageSizeBytes(32);
-  //myMem.setMemorySizeBytes(4096);
-
-  //If specs are not available at start, they are auto-detected
   if (myMem.begin() == false)
   {
     Serial.println("No memory detected. Freezing.");
@@ -76,7 +59,7 @@ void setup()
   //
   //  while (1);
 
-  //Write a series of bytes then test to see if auto detect changes them
+  //Write a series of bytes then test to see if auto-detect changes them
   //The detection functions *should not* modify the data on the EEPROM
 
   int maxBytes = 300; //Ideally we write this many bytes

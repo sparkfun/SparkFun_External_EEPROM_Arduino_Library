@@ -36,13 +36,9 @@ void setup()
 
   Wire.begin();
 
-  //The memory specs can be set before begin() to skip the auto-detection delay and write wear
-  //24LC16 - 16384 bit / 2048 bytes - 1 address byte, 16 byte page size
-  //myMem.setAddressBytes(1);
-  //myMem.setPageSizeBytes(16);
-  //myMem.setMemorySizeBytes(2048);
+  //We don't need to specify the memory specs before begin(). We're just looking
+  //for a I2C device to ACK.
 
-  //If specs are not available at begin(), they are auto-detected
   if (myMem.begin() == false)
   {
     Serial.println("No memory detected. Freezing.");
@@ -51,12 +47,11 @@ void setup()
   }
   Serial.println("Memory detected!");
 
-  //Detection functions can also be called/re-run after begin()
   Serial.print("Detected number of address bytes: ");
   Serial.println(myMem.detectAddressBytes());
 
-  //Page size detection is limited by the platform. For example, the Uno has a I2C buffer
-  //that is 32 bytes. Therefor, page sizes above 16 bytes cannot be detected or used. For maximum
+  //Page size detection is limited by the platform. For example, the Uno has an I2C buffer
+  //that is 32 bytes. Therefore, page sizes above 16 bytes cannot be detected or used. For maximum
   //write speeds to an EEPROM, use a platform with a large I2C buffer (ie ESP32 is 128 bytes)
   //and an EEPROM with a large page size (24XX512 is 128 bytes).
   Serial.print("Detected pageSizeBytes: ");

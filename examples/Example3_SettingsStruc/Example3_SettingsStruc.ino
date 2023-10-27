@@ -45,7 +45,7 @@ struct_userSettings settings = {
 void setup()
 {
   Serial.begin(115200);
-  delay(10);
+  //delay(250); //Often needed for ESP based platforms
   Serial.println(F("Qwiic EEPROM example"));
 
   Wire.begin();
@@ -53,7 +53,7 @@ void setup()
   if (myMem.begin() == false)
   {
     Serial.println(F("No memory detected. Freezing."));
-    while (1);
+    while (true);
   }
   Serial.println(F("Memory detected!"));
 

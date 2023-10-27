@@ -36,8 +36,8 @@ ExternalEEPROM myMem;
 void setup()
 {
   Serial.begin(115200);
-  delay(10);
-  Serial.println("I2C EEPROM example");
+  //delay(250); //Often needed for ESP based platforms
+  Serial.println("Qwiic EEPROM example");
   
 //  Wire1.setClock(400000); //set I2C communication to 400kHz
   Wire1.begin();
@@ -48,7 +48,8 @@ void setup()
   if (myMem.begin(EEPROM_ADDRESS, Wire1) == false) //And Uno will fail to compile here
   {
     Serial.println("No memory detected. Freezing.");
-    while (1);
+    while (true)
+        ;
   }
   Serial.println("Memory detected!");
 

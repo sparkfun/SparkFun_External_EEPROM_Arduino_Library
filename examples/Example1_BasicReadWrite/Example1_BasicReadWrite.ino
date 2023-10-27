@@ -27,9 +27,12 @@ ExternalEEPROM myMem;
 void setup()
 {
   Serial.begin(115200);
+  //delay(250); //Often needed for ESP based platforms
   Serial.println("Qwiic EEPROM example");
 
   Wire.begin();
+
+  //We must set the memory specs. Pick your EEPROM From the list:
 
   // 24xx00 - 128 bit / 16 bytes - 1 address byte, 1 byte page
   // 24xx01 - 1024 bit / 128 bytes - 1 address byte, 8 byte page
@@ -45,30 +48,16 @@ void setup()
   // 24xx1024 - 1024000 bit / 128000 byte - 2 address byte, 128 byte page
   // 24xxM02 - 2097152 bit / 262144 byte - 2 address bytes, 256 byte page
 
-  // 24xx16 - 16384 bit / 2048 bytes - 1 address byte, 16 byte page size
-  //myMem.setAddressBytes(1);
-  //myMem.setPageSizeBytes(16);
-  //myMem.setMemorySizeBytes(2048);
+  // Valid types: 24xx00, 01, 02, 04, 08, 16, 32, 64, 128, 256, 512, 1024, 2048
+  // myMem.setMemoryType(16); 
 
-  // 24xx04 - 4096 bit / 512 bytes - 1 address byte, 16 byte page
-  //myMem.setAddressBytes(1);
-  //myMem.setPageSizeBytes(16);
-  //myMem.setMemorySizeBytes(2048);
-
-  // 24xx02 - 2048 bit / 256 bytes - 1 address byte, 8 byte page
-  //myMem.setAddressBytes(1);
-  //myMem.setPageSizeBytes(8);
-  //myMem.setMemorySizeBytes(256);
-
-  // 24xx512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page
-  myMem.setAddressBytes(2);
-  myMem.setPageSizeBytes(128);
-  myMem.setMemorySizeBytes(65536);
+  // Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/14764
+  myMem.setMemoryType(512); // Valid types: 24xx00, 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048
 
   if (myMem.begin() == false)
   {
     Serial.println("No memory detected. Freezing.");
-    while (1)
+    while (true)
       ;
   }
   Serial.println("Memory detected!");
@@ -81,7 +70,7 @@ void setup()
   myMem.write(0, myValue1); //(location, data)
 
   byte myRead1 = myMem.read(0);
-  Serial.print("I read: ");
+  Serial.print("I read (should be 200): ");
   Serial.println(myRead1);
 
   //You should use gets and puts. This will automatically and correctly arrange
@@ -90,14 +79,14 @@ void setup()
   myMem.put(10, myValue2); //(location, data)
   int myRead2;
   myMem.get(10, myRead2); //location to read, thing to put data into
-  Serial.print("I read: ");
+  Serial.print("I read (should be -366): ");
   Serial.println(myRead2);
 
   float myValue3 = -7.35;
   myMem.put(20, myValue3); //(location, data)
   float myRead3;
   myMem.get(20, myRead3); //location to read, thing to put data into
-  Serial.print("I read: ");
+  Serial.print("I read (should be -7.35): ");
   Serial.println(myRead3);
 
   String myString = "Hi, I am just a simple test string";
