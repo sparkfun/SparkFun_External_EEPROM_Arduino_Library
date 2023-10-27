@@ -13,7 +13,7 @@
   This library supports EEPROMs with any I2C address and
   any Wire hardware (Wire1, Wire2, etc) by passing them into begin.
   
-  For this example the I2C EEPROM should have all its ADR0 to VCC, 
+  For this example, the I2C EEPROM should have all its ADR0 to VCC, 
   ADR1 to GND, and ADR2 to GND.
 
   Hardware Connections:

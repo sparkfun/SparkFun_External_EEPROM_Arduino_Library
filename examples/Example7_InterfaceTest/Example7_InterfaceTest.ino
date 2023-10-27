@@ -42,7 +42,7 @@ void setup()
 
   //Set the memory specs
   //Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/14764
-  myMem.setMemoryType(512); // Valid types: 24xx00, 01, 02, 04, 08, 16, 32, 64, 128, 256, 512, 1024, 2048
+  myMem.setMemoryType(512); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048
 
   if (myMem.begin() == false)
   {
