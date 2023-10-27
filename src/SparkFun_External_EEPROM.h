@@ -135,6 +135,8 @@ class ExternalEEPROM
     uint32_t getMemorySize();                  // Depricated
     uint32_t length();                         // Return size of EEPROM in bytes
 
+    void setMemoryType(uint16_t typeNumber);      // Valid types: 00, 01, 02, 04, 08, 16, 32, 64, 128, 256, 512, 1024, 2048
+
     uint8_t detectAddressBytes(); // Determine the number of address bytes, 1 or 2
     void setAddressBytes(uint8_t addressBytes);
     uint8_t getAddressBytes();

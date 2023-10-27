@@ -124,10 +124,121 @@ uint32_t ExternalEEPROM::getMemorySize()
 void ExternalEEPROM::setMemorySizeBytes(uint32_t memSize)
 {
     settings.memorySize_bytes = memSize;
+
+    //Try to identify this memory size settings
+    switch (memSize)
+    {
+    default:
+        // Unknown memory size
+        break;
+    case (16):
+        setAddressBytes(1);
+        setPageSizeBytes(1);
+        break;
+    case (128):
+        setAddressBytes(1);
+        setPageSizeBytes(8);
+        break;
+    case (256):
+        setAddressBytes(1);
+        setPageSizeBytes(8);
+        break;
+    case (512):
+        setAddressBytes(1);
+        setPageSizeBytes(16);
+        break;
+    case (1024):
+        setAddressBytes(1);
+        setPageSizeBytes(16);
+        break;
+    case (2048):
+        setAddressBytes(1);
+        setPageSizeBytes(16);
+        break;
+    case (4096):
+        setAddressBytes(2);
+        setPageSizeBytes(32);
+        break;
+    case (8192):
+        setAddressBytes(2);
+        setPageSizeBytes(32);
+        break;
+    case (16384):
+        setAddressBytes(2);
+        setPageSizeBytes(64);
+        break;
+    case (32768):
+        setAddressBytes(2);
+        setPageSizeBytes(64);
+        break;
+    case (65536):
+        setAddressBytes(2);
+        setPageSizeBytes(128);
+        break;
+    case (128000):
+        setAddressBytes(2);
+        setPageSizeBytes(128);
+        break;
+    case (262144):
+        setAddressBytes(2);
+        setPageSizeBytes(256);
+        break;
+    }
 }
 uint32_t ExternalEEPROM::getMemorySizeBytes()
 {
     return settings.memorySize_bytes;
+}
+
+void ExternalEEPROM::setMemoryType(uint16_t typeNumber)
+{
+    //Set settings based on known memory types
+    switch (typeNumber)
+    {
+    default:
+        // Unknown type number
+        break;
+    case (0):
+        setMemorySizeBytes(16);
+        break;
+    case (1):
+        setMemorySizeBytes(128 * typeNumber); //128
+        break;
+    case (2):
+        Serial.println("2");
+        setMemorySizeBytes(128 * typeNumber); //256
+        break;
+    case (4):
+        setMemorySizeBytes(128 * typeNumber); //512
+        break;
+    case (8):
+        setMemorySizeBytes(128 * typeNumber); //1024
+        break;
+    case (16):
+        setMemorySizeBytes(128 * typeNumber); //2048
+        break;
+    case (32):
+        setMemorySizeBytes(128 * typeNumber); //4096
+        break;
+    case (64):
+        setMemorySizeBytes(128 * typeNumber); //8192
+        break;
+    case (128):
+        setMemorySizeBytes(128 * typeNumber); //16384
+        break;
+    case (256):
+        setMemorySizeBytes(128 * typeNumber); //32768
+        break;
+    case (512):
+        setMemorySizeBytes(128 * typeNumber); //65536
+        break;
+    case (1024):
+        setMemorySizeBytes(128000); //128000
+        break;
+    case (2048):
+        setMemorySizeBytes(262144); //262144
+        break;
+    }
 }
 
 // Old get/setPageSize. Use get/setPageSizeBytes
@@ -475,7 +586,7 @@ uint16_t ExternalEEPROM::detectPageSizeBytes()
 // For EEPROMs of 4k, 8k, and 16k bit, there are three bits called
 // 'block select bits' inside the address byte that are used
 // For 32k, 64k, 128k, 256k, and 512k bit we need two address bytes
-// At 1Mbit (128,000 byte) and above there are two address bytes and a block select bit 
+// At 1Mbit (128,000 byte) and above there are two address bytes and a block select bit
 // is used but at the upper end of the address bits (so instead of A2/A1/A0 it's B0/A1/A0).
 uint32_t ExternalEEPROM::detectMemorySizeBytes()
 {

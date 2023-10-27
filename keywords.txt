@@ -20,6 +20,7 @@ write	KEYWORD2
 erase	KEYWORD2
 setMemorySize	KEYWORD2
 getMemorySize	KEYWORD2
+setMemoryType	KEYWORD2
 length	KEYWORD2
 setPageSize	KEYWORD2
 getPageSize	KEYWORD2
