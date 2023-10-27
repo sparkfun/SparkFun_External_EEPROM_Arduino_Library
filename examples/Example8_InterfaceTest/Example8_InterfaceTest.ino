@@ -13,6 +13,21 @@
   The I2C EEPROM should have all its ADR pins set to GND (0). This is default
   on the Qwiic board.
 
+  Known/compatible memory types (basically all I2C EEPROMs):
+   24xx00 - 128 bit / 16 bytes - 1 address byte, 1 byte page size
+   24xx01 - 1024 bit / 128 bytes - 1 address byte, 8 byte page size
+   24xx02 - 2048 bit / 256 bytes - 1 address byte, 8 byte page size
+   24xx04 - 4096 bit / 512 bytes - 1 address byte, 16 byte page size
+   24xx08 - 8192 bit / 1024 bytes - 1 address byte, 16 byte page size
+   24xx16 - 16384 bit / 2048 bytes - 1 address byte, 16 byte page size
+   24xx32 - 32768 bit / 4096 bytes - 2 address bytes, 32 byte page size
+   24xx64 - 65536 bit / 8192 bytes - 2 address bytes, 32 byte page size
+   24xx128 - 131072 bit / 16384 bytes - 2 address bytes, 64 byte page size
+   24xx256 - 262144 bit / 32768 bytes - 2 address bytes, 64 byte page size
+   24xx512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page size
+   24xx1024 - 1024000 bit / 128000 byte - 2 address bytes, 128 byte page size
+   24xxM02 - 2097152 bit / 262144 byte - 2 address bytes, 256 byte page size
+
   Hardware Connections:
   Plug the SparkFun Qwiic EEPROM to an Uno, Artemis, or other Qwiic equipped board
   Load this sketch
@@ -41,7 +56,25 @@ void setup()
   //Wire.setClock(1000000);
 
   //Set the memory specs
-  myMem.setMemoryType(2); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1025, 2048
+  // 24xx00 - 128 bit / 16 bytes - 1 address byte, 1 byte page
+  // 24xx01 - 1024 bit / 128 bytes - 1 address byte, 8 byte page
+  // 24xx02 - 2048 bit / 256 bytes - 1 address byte, 8 byte page
+  // 24xx04 - 4096 bit / 512 bytes - 1 address byte, 16 byte page
+  // 24xx08 - 8192 bit / 1024 bytes - 1 address byte, 16 byte page
+  // 24xx16 - 16384 bit / 2048 bytes - 1 address byte, 16 byte page
+  // 24xx32 - 32768 bit / 4096 bytes - 2 address bytes, 32 byte page
+  // 24xx64 - 65536 bit / 8192 bytes - 2 address bytes, 32 byte page
+  // 24xx128 - 131072 bit / 16384 bytes - 2 address bytes, 64 byte page
+  // 24xx256 - 262144 bit / 32768 bytes - 2 address bytes, 64 byte page
+  // 24xx512 - 524288 bit / 65536 bytes - 2 address bytes, 128 byte page
+  // 24xx1024 - 1024000 bit / 128000 byte - 2 address byte, 128 byte page
+  // 24xxM02 - 2097152 bit / 262144 byte - 2 address bytes, 256 byte page
+
+//  myMem.setMemoryType(2); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048
+
+  myMem.setMemorySizeBytes(256);
+  myMem.setAddressBytes(1); //Set address bytes and page size after MemorySizeBytes()
+  myMem.setPageSizeBytes(1);
 
   if (myMem.begin() == false)
   {
