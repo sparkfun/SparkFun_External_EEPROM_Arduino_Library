@@ -181,11 +181,11 @@ class ExternalEEPROM
         .i2cPort = &Wire,
         .deviceAddress =
             0b1010000, // 0x50; format is 0b1010 + (A2 A1 A0) or 0b1010 + (B0 A1 A0) for larger (>512kbit) EEPROMs
-        .memorySize_bytes = (uint32_t)512 * 1024 / 8, // 65,536 bytes = 512-Kbit EEPROM
-        .pageSize_bytes = 64,
+        .memorySize_bytes = 4096, // Default to 4096, to support 24xx32 / 4096 byte EEPROMs and larger
+        .pageSize_bytes = 32, // Default to 32 bytes, to support 24xx32 / 4096 byte EEPROMs and larger
         .writeTime_ms = 5, //All EEPROMs seem to have a max write time of 5ms
         .pollForWriteComplete = true,
-        .addressSize_bytes = 0,
+        .addressSize_bytes = 2, // Default to two address bytes, to support 24xx32 / 4096 byte EEPROMs and larger
     };
 };
 
