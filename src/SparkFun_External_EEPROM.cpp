@@ -66,6 +66,22 @@ bool ExternalEEPROM::begin(uint8_t deviceAddress, TwoWire &wirePort)
 
     return true;
 }
+bool ExternalEEPROM::begin(uint8_t WP = LED_BUILTIN, uint8_t deviceAddress, TwoWire &wirePort)
+{
+    pinMode(WP, OUTPUT);
+    digitalWrite(WP, HIGH);
+    settings.wpPin = WP;
+    settings.usingWP = true;
+    settings.i2cPort = &wirePort; // Grab which port the user wants us to use
+    settings.deviceAddress = deviceAddress;
+
+    if (isConnected() == false)
+    {
+        return false;
+    }
+
+    return true;
+}
 
 // Erase entire EEPROM
 void ExternalEEPROM::erase(uint8_t toWrite)
@@ -876,6 +892,9 @@ int ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, u
         while (isBusy(settings.deviceAddress) == true) // Poll device's original address, not the modified one
             delayMicroseconds(100); // This shortens the amount of time waiting between writes but hammers the I2C bus
 
+        // Check if we are using Write Protection then disable WP for write access
+        if(settings.usingWP)    digitalWrite(settings.wpPin, LOW);
+
         settings.i2cPort->beginTransmission(i2cAddress);
         if (settings.addressSize_bytes > 1) // Device larger than 16,384 bits have two byte addresses
             settings.i2cPort->write((uint8_t)((eepromLocation + recorded) >> 8)); // MSB
@@ -885,6 +904,8 @@ int ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, u
             settings.i2cPort->write(dataToWrite[recorded + x]);
 
         result = settings.i2cPort->endTransmission(); // Send stop condition
+        // Enable Write Protection if we are using WP
+        if(settings.usingWP)    digitalWrite(settings.wpPin, HIGH);
 
         recorded += amtToWrite;
 
