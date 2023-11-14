@@ -126,14 +126,14 @@ void setup()
   myMem.write(0, myValue1); //(location, data)
 
   byte myRead1 = myMem.read(0);
-  Serial.print("I read: ");
+  Serial.print("I read (should be 200): ");
   Serial.println(myRead1);
 
   int myValue2 = -366;
   myMem.put(10, myValue2); //(location, data)
   int myRead2;
   myMem.get(10, myRead2); //location to read, thing to put data into
-  Serial.print("I read: ");
+  Serial.print("I read (should be -366): ");
   Serial.println(myRead2);
 
   if (myMem.getMemorySizeBytes() > 16)
@@ -142,7 +142,7 @@ void setup()
     myMem.put(20, myValue3); //(location, data)
     float myRead3;
     myMem.get(20, myRead3); //location to read, thing to put data into
-    Serial.print("I read: ");
+    Serial.print("I read (should be -7.35): ");
     Serial.println(myRead3);
 
     String myString = "Hi, I am just a simple test string"; //34 characters
