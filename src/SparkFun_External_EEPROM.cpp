@@ -590,8 +590,6 @@ uint16_t ExternalEEPROM::detectPageSizeBytes()
 // is used but at the upper end of the address bits (so instead of A2/A1/A0 it's B0/A1/A0).
 uint32_t ExternalEEPROM::detectMemorySizeBytes()
 {
-    uint8_t i2cAddress = settings.deviceAddress;
-
     // We do a read-write-read-write to test.
     uint32_t testLocation = (128 / 8) - 1; // Start at the last spot of the smallest EEPROM
     uint32_t lastGoodLocation = 0;
@@ -622,8 +620,6 @@ uint32_t ExternalEEPROM::detectMemorySizeBytes()
     // 3 Write value to current spot
     // 4 Check value at next threshold. If it was changed then we know the address we wrote was wrapped.
     // 5 Return memory spot to its original value
-
-    int loopCount = 1;
 
     while (1)
     {
