@@ -6,7 +6,7 @@
   License: This code is public domain but you buy me a beer if you use this
   and we meet someday (Beerware license).
   Feel like supporting our work? Buy a board from SparkFun!
-  https://www.sparkfun.com/products/14764
+  https://www.sparkfun.com/products/18355
 
   This example demonstrates how to read and write various variables to memory.
 
@@ -48,10 +48,9 @@ void setup()
   // 24xx1025 - 1024000 bit / 128000 byte - 2 address byte, 128 byte page
   // 24xxM02 - 2097152 bit / 262144 byte - 2 address bytes, 256 byte page
 
-  // Valid types: 24xx00, 01, 02, 04, 08, 16, 32, 64, 128, 256, 512, 1025, 2048
-  // myMem.setMemoryType(16); 
+  // Setting the memory type configures the memory size in bytes, the number of address bytes, and the page size in bytes.
 
-  // Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/14764
+  // Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/18355
   myMem.setMemoryType(512); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1025, 2048
 
   if (myMem.begin() == false)
