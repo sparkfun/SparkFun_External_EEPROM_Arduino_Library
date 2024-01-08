@@ -205,7 +205,6 @@ void ExternalEEPROM::setMemoryType(uint16_t typeNumber)
         setMemorySizeBytes(128 * typeNumber); //128
         break;
     case (2):
-        Serial.println("2");
         setMemorySizeBytes(128 * typeNumber); //256
         break;
     case (4):
