@@ -111,7 +111,6 @@ struct struct_memorySettings
     uint8_t writeTime_ms;
     bool pollForWriteComplete;
     uint8_t addressSize_bytes;
-    bool usingWP;
     uint8_t wpPin;
 };
 
@@ -124,7 +123,7 @@ class ExternalEEPROM
     int write(uint32_t eepromLocation, const uint8_t *dataToWrite, uint16_t blockSize);
 
     bool begin(uint8_t deviceAddress = 0b1010000, TwoWire &wirePort = Wire); // By default use the Wire port
-    bool begin(uint8_t WP, uint8_t deviceAddress = 0b1010000, TwoWire &wirePort = Wire); // By default use the Wire port
+    bool begin(uint8_t deviceAddress = 0b1010000, TwoWire &wirePort = Wire, uint8_t WP = 255); // By default use the Wire port
     
     bool isConnected(uint8_t i2cAddress = 255);
     bool isBusy(uint8_t i2cAddress = 255);
@@ -190,8 +189,7 @@ class ExternalEEPROM
         .writeTime_ms = 5, //All EEPROMs seem to have a max write time of 5ms
         .pollForWriteComplete = true,
         .addressSize_bytes = 2, // Default to two address bytes, to support 24xx32 / 4096 byte EEPROMs and larger
-        .usingWP = false,
-        .wpPin = LED_BUILTIN,
+        .wpPin = 255, // By default, the write protection pin is not set
     };
 };
 

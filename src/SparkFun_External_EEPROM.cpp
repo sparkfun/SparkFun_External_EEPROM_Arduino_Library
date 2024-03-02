@@ -66,12 +66,14 @@ bool ExternalEEPROM::begin(uint8_t deviceAddress, TwoWire &wirePort)
 
     return true;
 }
-bool ExternalEEPROM::begin(uint8_t WP = LED_BUILTIN, uint8_t deviceAddress, TwoWire &wirePort)
+bool ExternalEEPROM::begin(uint8_t deviceAddress, TwoWire &wirePort, uint8_t WP)
 {
-    pinMode(WP, OUTPUT);
-    digitalWrite(WP, HIGH);
-    settings.wpPin = WP;
-    settings.usingWP = true;
+    if(WP != 255)
+    {
+        pinMode(WP, OUTPUT);
+        digitalWrite(WP, HIGH);
+        settings.wpPin = WP;
+    }
     settings.i2cPort = &wirePort; // Grab which port the user wants us to use
     settings.deviceAddress = deviceAddress;
 
@@ -893,7 +895,7 @@ int ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, u
             delayMicroseconds(100); // This shortens the amount of time waiting between writes but hammers the I2C bus
 
         // Check if we are using Write Protection then disable WP for write access
-        if(settings.usingWP)    digitalWrite(settings.wpPin, LOW);
+        if(settings.wpPin != 255 ) digitalWrite(settings.wpPin, LOW);
 
         settings.i2cPort->beginTransmission(i2cAddress);
         if (settings.addressSize_bytes > 1) // Device larger than 16,384 bits have two byte addresses
@@ -904,8 +906,6 @@ int ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, u
             settings.i2cPort->write(dataToWrite[recorded + x]);
 
         result = settings.i2cPort->endTransmission(); // Send stop condition
-        // Enable Write Protection if we are using WP
-        if(settings.usingWP)    digitalWrite(settings.wpPin, HIGH);
 
         recorded += amtToWrite;
 
@@ -914,6 +914,9 @@ int ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, u
 
         if (settings.pollForWriteComplete == false)
             delay(settings.writeTime_ms); // Delay the amount of time to record a page
+
+        // Enable Write Protection if we are using WP
+        if(settings.wpPin != 255) digitalWrite(settings.wpPin, HIGH);
     }
 
     return (result);
