@@ -56,9 +56,9 @@ void setup()
   Serial.print("Detected pageSizeBytes: ");
   Serial.println(myMem.detectPageSizeBytes());
 
-  //detectWriteTimeMs is *not* automatically called at begin() and is
-  //generally not needed. Write times are guaranteed to be under 5ms,
-  //and we use polling by default so its use is limited.
+  //The EEPROM write time is 5 ms for all EEPROMs currently manufactured. 
+  //Automatically detecting the write time is therefore not generally needed,
+  //but it's here if needed.
   Serial.print("Detected page write time (ms): ");
   Serial.println(myMem.detectWriteTimeMs());
 

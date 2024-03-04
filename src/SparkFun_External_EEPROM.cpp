@@ -4,7 +4,7 @@
   EEPROM library so you can use the same get() and put() functions.
 
   https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library
-  Best used with the Qwiic EEPROM: https://www.sparkfun.com/products/14764
+  Best used with the Qwiic EEPROM: https://www.sparkfun.com/products/18355
 
   Various external EEPROMs have various interface specs
   (overall size, page size, write times, etc). This library works with
@@ -223,7 +223,6 @@ void ExternalEEPROM::setMemoryType(uint16_t typeNumber)
         setMemorySizeBytes(128 * typeNumber); //128
         break;
     case (2):
-        Serial.println("2");
         setMemorySizeBytes(128 * typeNumber); //256
         break;
     case (4):
@@ -608,8 +607,6 @@ uint16_t ExternalEEPROM::detectPageSizeBytes()
 // is used but at the upper end of the address bits (so instead of A2/A1/A0 it's B0/A1/A0).
 uint32_t ExternalEEPROM::detectMemorySizeBytes()
 {
-    uint8_t i2cAddress = settings.deviceAddress;
-
     // We do a read-write-read-write to test.
     uint32_t testLocation = (128 / 8) - 1; // Start at the last spot of the smallest EEPROM
     uint32_t lastGoodLocation = 0;
@@ -640,8 +637,6 @@ uint32_t ExternalEEPROM::detectMemorySizeBytes()
     // 3 Write value to current spot
     // 4 Check value at next threshold. If it was changed then we know the address we wrote was wrapped.
     // 5 Return memory spot to its original value
-
-    int loopCount = 1;
 
     while (1)
     {

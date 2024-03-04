@@ -4,7 +4,7 @@
   EEPROM library so you can use the same get() and put() functions.
 
   https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library
-  Best used with the Qwiic EEPROM: https://www.sparkfun.com/products/14764
+  Best used with the Qwiic EEPROM: https://www.sparkfun.com/products/18355
 
   Various external EEPROMs have various interface specs
   (overall size, page size, write times, etc). This library works with

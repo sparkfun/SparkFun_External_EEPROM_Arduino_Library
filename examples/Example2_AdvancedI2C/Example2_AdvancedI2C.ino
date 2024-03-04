@@ -6,7 +6,7 @@
   License: This code is public domain but you buy me a beer if you use this 
   and we meet someday (Beerware license).
   Feel like supporting our work? Buy a board from SparkFun!
-  https://www.sparkfun.com/products/14764
+  https://www.sparkfun.com/products/18355
 
   This example demonstrates how to pass a custom EEPROM address and Wire.
 
@@ -42,7 +42,7 @@ void setup()
 //  Wire1.setClock(400000); //set I2C communication to 400kHz
   Wire1.begin();
 
-  // Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/14764
+  // Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/18355
   myMem.setMemoryType(512); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1025, 2048
 
   #define EEPROM_ADDRESS 0b1010001 //0b1010(A2 A1 A0): A standard I2C EEPROM with the ADR0 bit set to VCC

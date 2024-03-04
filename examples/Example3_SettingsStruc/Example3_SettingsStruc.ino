@@ -6,7 +6,7 @@
   License: This code is public domain but you buy me a beer if you use this
   and we meet someday (Beerware license).
   Feel like supporting our work? Buy a board from SparkFun!
-  https://www.sparkfun.com/products/14764
+  https://www.sparkfun.com/products/18355
 
   This example demonstrates how to record various user settings easily to EEPROM.
 
@@ -50,7 +50,7 @@ void setup()
 
   Wire.begin();
 
-  // Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/14764
+  // Default to the Qwiic 24xx512 EEPROM: https://www.sparkfun.com/products/18355
   myMem.setMemoryType(512); // Valid types: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1025, 2048
 
   if (myMem.begin() == false)
