@@ -122,7 +122,6 @@ class ExternalEEPROM
     int write(uint32_t eepromLocation, uint8_t dataToWrite);
     int write(uint32_t eepromLocation, const uint8_t *dataToWrite, uint16_t blockSize);
 
-    bool begin(uint8_t deviceAddress = 0b1010000, TwoWire &wirePort = Wire); // By default use the Wire port
     bool begin(uint8_t deviceAddress = 0b1010000, TwoWire &wirePort = Wire, uint8_t WP = 255); // By default use the Wire port
     
     bool isConnected(uint8_t i2cAddress = 255);

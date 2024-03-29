@@ -26,8 +26,14 @@
 #include "Arduino.h"
 #include "Wire.h"
 
-bool ExternalEEPROM::begin(uint8_t deviceAddress, TwoWire &wirePort)
+bool ExternalEEPROM::begin(uint8_t deviceAddress, TwoWire &wirePort, uint8_t WP)
 {
+    if(WP != 255)
+    {
+        pinMode(WP, OUTPUT);
+        digitalWrite(WP, HIGH);
+        settings.wpPin = WP;
+    }
     settings.i2cPort = &wirePort; // Grab which port the user wants us to use
     settings.deviceAddress = deviceAddress;
 
@@ -63,24 +69,6 @@ bool ExternalEEPROM::begin(uint8_t deviceAddress, TwoWire &wirePort)
     //     // Serial.print("Detected memory size: ");
     //     // Serial.println(getMemorySizeBytes());
     // }
-
-    return true;
-}
-bool ExternalEEPROM::begin(uint8_t deviceAddress, TwoWire &wirePort, uint8_t WP)
-{
-    if(WP != 255)
-    {
-        pinMode(WP, OUTPUT);
-        digitalWrite(WP, HIGH);
-        settings.wpPin = WP;
-    }
-    settings.i2cPort = &wirePort; // Grab which port the user wants us to use
-    settings.deviceAddress = deviceAddress;
-
-    if (isConnected() == false)
-    {
-        return false;
-    }
 
     return true;
 }
