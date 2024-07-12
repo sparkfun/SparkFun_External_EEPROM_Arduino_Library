@@ -54,7 +54,7 @@ Thanks to:
 * [RayNieport](https://github.com/RayNieport) for adding [RP2040 support](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/14).
 * [wolfbert](https://github.com/wolfbert) for adding [ESP8266 support](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/15).
 * [romain145](https://github.com/romain145) for fixing a [multi-page write](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/18) bug.
-* [wollewald](https://github.com/wollewald) for read/write strings.
+* [wollewald](https://github.com/wollewald) for [read/write strings](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/21).
 * [giminotron5](https://github.com/giminotron5) for adding [write protect control](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/30).
 * [merlinz01](https://github.com/merlinz01) for adding [putChanged()](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/38) method
 
