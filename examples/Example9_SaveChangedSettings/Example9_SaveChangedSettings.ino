@@ -18,7 +18,10 @@
 
   Hardware Connections:
   Plug the SparkFun Qwiic EEPROM to an Uno, Artemis, or other Qwiic equipped
-  board Load this sketch Open output window at 115200bps
+  board.
+  Load this sketch.
+  Open serial monitor window with baud rate at 115200 and line ending set to
+  Line Feed.
 */
 
 // Include the necessary libraries
