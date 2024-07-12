@@ -49,6 +49,7 @@ Thanks to:
 
 * Hutch67 for correcting the [test for pollForWriteComplete setting](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/4/files)
 * [TinaJ_kay](https://github.com/TylerBird) for correcting [ambiguous int declaration](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/7) and adding STM32 support
+* [merlinz01](https://github.com/merlinz01) for adding [putChanged()](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/38) method
 
 Repository Contents
 -------------------
