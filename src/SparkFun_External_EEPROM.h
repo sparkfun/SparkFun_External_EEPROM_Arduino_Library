@@ -174,6 +174,19 @@ class ExternalEEPROM
         return t;
     }
 
+    template <typename T> const T &putChanged(uint32_t idx, const T &t)  // Address, data
+    {
+      const uint8_t *newData = (const uint8_t *)&t;
+      uint8_t oldData[sizeof(T)];
+      read(idx, oldData, sizeof(T));  // Address, data, sizeOfData
+      for (uint16_t i = 0; i < sizeof(T); i++) {
+        if (oldData[i] != newData[i]) {
+          write(idx + i, newData[i]);
+        }
+      }
+      return t;
+    }
+
     uint32_t putString(uint32_t eepromLocation, String &strToWrite);
     void getString(uint32_t eepromLocation, String &strToRead);
 
