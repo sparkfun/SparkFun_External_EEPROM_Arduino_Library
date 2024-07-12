@@ -47,8 +47,15 @@ Want to help? Please do! We are always looking for ways to improve and build out
 
 Thanks to:
 
-* Hutch67 for correcting the [test for pollForWriteComplete setting](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/4/files)
-* [TinaJ_kay](https://github.com/TylerBird) for correcting [ambiguous int declaration](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/7) and adding STM32 support
+* [Hutch67](https://github.com/Hutch67) for correcting the [test for pollForWriteComplete setting](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/4/files)
+* [TylerBird](https://github.com/TylerBird) for correcting [ambiguous int declaration](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/7) and adding STM32 support
+* [quarcko](https://github.com/quarcko) for [small EEPROM support](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/11) (24LC02).
+* [robsonos](https://github.com/robsonos) adding for [nRF52 support](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/12).
+* [RayNieport](https://github.com/RayNieport) for adding [RP2040 support](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/14).
+* [wolfbert](https://github.com/wolfbert) for adding [ESP8266 support](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/15).
+* [romain145](https://github.com/romain145) for fixing a [multi-page write](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/18) bug.
+* [wollewald](https://github.com/wollewald) for read/write strings.
+* [giminotron5](https://github.com/giminotron5) for adding [write protect control](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/30).
 * [merlinz01](https://github.com/merlinz01) for adding [putChanged()](https://github.com/sparkfun/SparkFun_External_EEPROM_Arduino_Library/pull/38) method
 
 Repository Contents
