@@ -1,5 +1,5 @@
 /*
-  Read and write  data to an external I2C EEPROM
+  Read and write data to an external I2C EEPROM
   By: Nathan Seidle, Merlin Z
   SparkFun Electronics
   Date: July 11, 2024
