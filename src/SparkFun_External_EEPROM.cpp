@@ -208,34 +208,34 @@ void ExternalEEPROM::setMemoryType(uint16_t typeNumber)
         setMemorySizeBytes(16);
         break;
     case (1):
-        setMemorySizeBytes(128 * typeNumber); //128
+        setMemorySizeBytes(128 * (uint32_t)typeNumber); //128
         break;
     case (2):
-        setMemorySizeBytes(128 * typeNumber); //256
+        setMemorySizeBytes(128 * (uint32_t)typeNumber); //256
         break;
     case (4):
-        setMemorySizeBytes(128 * typeNumber); //512
+        setMemorySizeBytes(128 * (uint32_t)typeNumber); //512
         break;
     case (8):
-        setMemorySizeBytes(128 * typeNumber); //1024
+        setMemorySizeBytes(128 * (uint32_t)typeNumber); //1024
         break;
     case (16):
-        setMemorySizeBytes(128 * typeNumber); //2048
+        setMemorySizeBytes(128 * (uint32_t)typeNumber); //2048
         break;
     case (32):
-        setMemorySizeBytes(128 * typeNumber); //4096
+        setMemorySizeBytes(128 * (uint32_t)typeNumber); //4096
         break;
     case (64):
-        setMemorySizeBytes(128 * typeNumber); //8192
+        setMemorySizeBytes(128 * (uint32_t)typeNumber); //8192
         break;
     case (128):
-        setMemorySizeBytes(128 * typeNumber); //16384
+        setMemorySizeBytes(128 * (uint32_t)typeNumber); //16384
         break;
     case (256):
-        setMemorySizeBytes(128 * typeNumber); //32768
+        setMemorySizeBytes(128 * (uint32_t)typeNumber); //32768
         break;
     case (512):
-        setMemorySizeBytes(128 * typeNumber); //65536
+        setMemorySizeBytes(128 * (uint32_t)typeNumber); //65536
         break;
     case (1025):
         setMemorySizeBytes(128000); //128000
