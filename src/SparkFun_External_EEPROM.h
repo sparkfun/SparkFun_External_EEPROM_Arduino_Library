@@ -45,6 +45,13 @@
 #define I2C_BUFFER_LENGTH_RX SERIAL_BUFFER_SIZE // SAMD21 uses RingBuffer.h
 #define I2C_BUFFER_LENGTH_TX SERIAL_BUFFER_SIZE
 
+#elif defined(__SAMD51__) || defined(ADAFRUIT_METRO_M4_EXPRESS)
+
+// SAMD51 doesn't have a definition, but it does have this as a template size
+// in Wire.h: https://github.com/adafruit/ArduinoCore-samd/blob/master/libraries/Wire/Wire.h#L74
+#define I2C_BUFFER_LENGTH_RX 256
+#define I2C_BUFFER_LENGTH_TX 256
+
 #elif (defined(__MK20DX128__) || defined(__MK20DX256__) || defined(__MKL26Z64__) || defined(__MK64FX512__) ||          \
        defined(__MK66FX1M0__) || defined(__IMXRT1062__)) // 3.0/3.1-3.2/LC/3.5/3.6/4.0
 
@@ -128,7 +135,7 @@ class ExternalEEPROM
     int write(uint32_t eepromLocation, const uint8_t *dataToWrite, uint16_t blockSize);
 
     bool begin(uint8_t deviceAddress = 0b1010000, TwoWire &wirePort = Wire, uint8_t WP = 255); // By default use the Wire port
-    
+
     bool isConnected(uint8_t i2cAddress = 255);
     bool isBusy(uint8_t i2cAddress = 255);
     void erase(uint8_t toWrite = 0x00); // Erase the entire memory. Optional: write a given byte to each spot.
