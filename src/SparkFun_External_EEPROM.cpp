@@ -830,12 +830,12 @@ int ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, u
     while (recorded < bufferSize)
     {
         // Limit the amount to write to either the page size or the Arduino limit of 30
-        int amtToWrite = bufferSize - recorded;
+        uint16_t amtToWrite = bufferSize - recorded;
 
         // Serial.print("amtToWrite: ");
         // Serial.println(amtToWrite);
 
-        if (amtToWrite > maxWriteSize)
+        if (amtToWrite > (uint16_t)maxWriteSize)
             amtToWrite = maxWriteSize;
 
         // Serial.print("amtToWrite: ");
