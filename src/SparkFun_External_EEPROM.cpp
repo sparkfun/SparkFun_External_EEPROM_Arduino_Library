@@ -816,8 +816,8 @@ int ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, u
     // Serial.print("bufferSize: ");
     // Serial.println(bufferSize);
 
-    uint16_t maxWriteSize = settings.pageSize_bytes;
-    if (maxWriteSize > (uint16_t)I2C_BUFFER_LENGTH_TX - settings.addressSize_bytes)
+    int16_t maxWriteSize = settings.pageSize_bytes;
+    if (maxWriteSize > I2C_BUFFER_LENGTH_TX - settings.addressSize_bytes)
         maxWriteSize =
             I2C_BUFFER_LENGTH_TX -
             settings.addressSize_bytes; // Arduino has 32 byte limit. We loose 1 or 2 bytes to the EEPROM address
@@ -835,7 +835,7 @@ int ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, u
         // Serial.print("amtToWrite: ");
         // Serial.println(amtToWrite);
 
-        if (amtToWrite > maxWriteSize)
+        if (amtToWrite > (uint16_t)maxWriteSize)
             amtToWrite = maxWriteSize;
 
         // Serial.print("amtToWrite: ");
